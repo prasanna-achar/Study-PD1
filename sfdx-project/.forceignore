@@ -1,0 +1,9 @@
+package.xml
+**/*.settings
+**/*.dup
+**/*.branch
+**/*.orig
+**/*.rej
+.sfdx
+.sf
+node_modules
