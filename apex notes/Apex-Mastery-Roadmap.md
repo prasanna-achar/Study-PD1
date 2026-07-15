@@ -27,6 +27,7 @@ graph TD
 
 ## 🟢 Phase 1: Core Language Fundamentals & OOP
 *Before writing business logic, master how Apex behaves as a strongly typed, object-oriented, cloud-first language.*
+> 📖 **Comprehensive Study Guide:** [01-Phase-1-Core-Language-Fundamentals-and-OOP.md](file:///c:/Users/karth/Desktop/PD1/apex%20notes/01-Phase-1-Core-Language-Fundamentals-and-OOP.md)
 
 - [ ] **Data Types & Variables:**
   - Primitives: `Integer`, `String`, `Boolean`, `Date`, `Datetime`, `Decimal`, `Id`, `Time`.
@@ -49,6 +50,7 @@ graph TD
 
 ## 🟡 Phase 2: Database Interaction (SOQL, SOSL & DML)
 *How Apex communicates with Salesforce schema and sObjects safely.*
+> 📖 **Comprehensive Study Guide:** [02-Phase-2-Database-Interaction-SOQL-SOSL-DML.md](file:///c:/Users/karth/Desktop/PD1/apex%20notes/02-Phase-2-Database-Interaction-SOQL-SOSL-DML.md)
 
 - [ ] **SOQL Basics:**
   - Structure: `SELECT`, `FROM`, `WHERE`, `ORDER BY`, `LIMIT`, `OFFSET`.
