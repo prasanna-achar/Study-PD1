@@ -58,6 +58,8 @@ function switchSection(sectionId) {
         updateDashboardStats();
     } else if (sectionId === 'bookmarks') {
         renderBookmarksView();
+    } else if (sectionId === 'all-questions') {
+        renderAllQuestionsView();
     }
 }
 
@@ -413,6 +415,111 @@ function renderBookmarksView() {
         </div>
     `).join('');
 }
+// Render Master Question Bank View
+function renderAllQuestionsView() {
+    const container = document.getElementById('all-questions-list');
+    if (!container) return;
+
+    const searchTerm = document.getElementById('search-questions')?.value.toLowerCase() || '';
+    const domainFilter = document.getElementById('filter-domain')?.value || 'all';
+
+    let filteredQuestions = QUESTION_BANK;
+
+    if (domainFilter !== 'all') {
+        filteredQuestions = filteredQuestions.filter(q => q.domain === domainFilter);
+    }
+    
+    if (searchTerm) {
+        filteredQuestions = filteredQuestions.filter(q => 
+            q.question.toLowerCase().includes(searchTerm) || 
+            q.explanation.toLowerCase().includes(searchTerm) ||
+            q.options.some(opt => opt.toLowerCase().includes(searchTerm))
+        );
+    }
+
+    if (filteredQuestions.length === 0) {
+        container.innerHTML = `
+            <div class="glass-card" style="text-align: center; padding: 40px;">
+                <p style="color: var(--text-muted); font-size: 16px;">No questions match your search filters.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Add state tracker if it doesn't exist
+    if (typeof window.bankAnswersRevealed === 'undefined') {
+        window.bankAnswersRevealed = {};
+    }
+
+    container.innerHTML = filteredQuestions.map((q, idx) => {
+        const isRevealed = window.bankAnswersRevealed[q.id] || false;
+        
+        // Format options
+        const optionsHtml = q.options.map((opt, optIdx) => {
+            const isCorrect = q.type === 'single' ? optIdx === q.correctAnswer : q.correctAnswers.includes(optIdx);
+            const letter = String.fromCharCode(65 + optIdx);
+            
+            if (isRevealed) {
+                // Highlighted correct answers
+                return `
+                    <div style="padding: 8px; margin-bottom: 6px; border-radius: 6px; background: ${isCorrect ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255,255,255,0.03)'}; border: 1px solid ${isCorrect ? 'var(--accent-green)' : 'var(--border-color)'}; display: flex; align-items: flex-start; gap: 10px;">
+                        <span style="font-weight: bold; color: ${isCorrect ? 'var(--accent-green)' : 'var(--text-muted)'}; min-width: 20px;">${letter}.</span>
+                        <span style="color: ${isCorrect ? '#fff' : 'var(--text-muted)'};">${escapeHtml(opt)}</span>
+                        ${isCorrect ? '<span style="margin-left: auto; color: var(--accent-green);">✔ Correct</span>' : ''}
+                    </div>
+                `;
+            } else {
+                // Hidden default state
+                return `
+                    <div style="padding: 8px; margin-bottom: 6px; border-radius: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); display: flex; align-items: flex-start; gap: 10px;">
+                        <span style="font-weight: bold; color: var(--text-muted); min-width: 20px;">${letter}.</span>
+                        <span style="color: var(--text-main);">${escapeHtml(opt)}</span>
+                    </div>
+                `;
+            }
+        }).join('');
+
+        return `
+            <div class="glass-card" style="margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span class="badge badge-domain">${q.domain}</span>
+                        <span style="color: var(--text-dim); font-size: 13px;">ID: ${q.id}</span>
+                    </div>
+                </div>
+                
+                <strong style="font-size: 16px; display: block; margin-bottom: 16px; color: var(--text-main); line-height: 1.5;">${formatQuestionText(q.question)}</strong>
+                
+                <div style="margin-bottom: 16px;">
+                    ${optionsHtml}
+                </div>
+                
+                ${!isRevealed ? `
+                    <button class="btn btn-primary" onclick="window.bankAnswersRevealed[${q.id}] = true; renderAllQuestionsView();" style="padding: 8px 16px; font-size: 14px;">
+                        Check Answer
+                    </button>
+                ` : `
+                    <div class="explanation-box" style="margin-top: 16px; background: rgba(0,0,0,0.2);">
+                        <span style="font-weight: 700; color: var(--accent-cyan); display: block; margin-bottom: 6px;">Explanation:</span>
+                        <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">${escapeHtml(q.explanation)}</p>
+                    </div>
+                `}
+            </div>
+        `;
+    }).join('');
+}
+
+// Add event listeners for filters
+document.addEventListener('DOMContentLoaded', () => {
+    // Wait slightly to ensure elements exist
+    setTimeout(() => {
+        const searchInput = document.getElementById('search-questions');
+        const filterSelect = document.getElementById('filter-domain');
+        
+        if (searchInput) searchInput.addEventListener('input', renderAllQuestionsView);
+        if (filterSelect) filterSelect.addEventListener('change', renderAllQuestionsView);
+    }, 500);
+});
 
 // Governor Limit Sandbox Simulator
 function initGovernorSandbox() {

@@ -45,6 +45,11 @@
                 </button>
             </li>
             <li class="nav-item">
+                <button data-section="all-questions">
+                    <span>📖</span> Master Question Bank
+                </button>
+            </li>
+            <li class="nav-item">
                 <button data-section="bookmarks">
                     <span>⭐</span> Bookmarked Questions (<span id="stat-bookmarks">0</span>)
                 </button>
@@ -437,6 +442,32 @@ private class ComprehensiveTests {
     }
 }</code></pre>
                 </div>
+            </div>
+        </section>
+
+        <!-- SECTION: MASTER QUESTION BANK -->
+        <section id="section-all-questions" class="view-section">
+            <div class="page-header">
+                <div>
+                    <h2>Master Question Bank (All Q&A)</h2>
+                    <p>Review every single practice question, correct answer, and detailed explanation outside of the mock exam simulator.</p>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                <input type="text" id="search-questions" placeholder="Search questions by keyword..." style="flex: 1; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: white; font-family: inherit;">
+                <select id="filter-domain" style="padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: #1e293b; color: white; font-family: inherit;">
+                    <option value="all">All Domains</option>
+                    <option value="Salesforce Fundamentals">Salesforce Fundamentals</option>
+                    <option value="Data Modeling & Management">Data Modeling & Management</option>
+                    <option value="Process Automation & Apex Logic">Process Automation & Apex Logic</option>
+                    <option value="User Interface (LWC & Aura)">User Interface (LWC & Aura)</option>
+                    <option value="Testing, Debugging & Deployment">Testing, Debugging & Deployment</option>
+                </select>
+            </div>
+
+            <div id="all-questions-list">
+                <!-- Populated dynamically via app.js -->
             </div>
         </section>
 

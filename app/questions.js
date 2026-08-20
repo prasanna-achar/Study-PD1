@@ -1065,6 +1065,154 @@ const QUESTION_BANK = [
         ],
         correctAnswer: 1,
         explanation: 'Introduced in Winter \'23 (API v56+), the dedicated **`Assert` namespace (`Assert.areEqual`, `Assert.isTrue`, `Assert.isNotNull`, `Assert.fail`)** replaces legacy `System.assert` methods to improve test code readability, self-documenting intent, and standardized diagnostic output during test execution failures.'
+    },
+    // =========================================================================================
+    // EXAM DUMP QUESTIONS (EXTRACTED FROM PDFS)
+    // =========================================================================================
+    {
+        id: 412,
+        domain: 'User Interface (LWC & Aura)',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'Which three resources in an Aura component bundle can contain JavaScript functions? (Choose 3)',
+        options: [
+            'Renderer',
+            'Design',
+            'Controller',
+            'Style',
+            'Helper'
+        ],
+        correctAnswers: [0, 2, 4],
+        explanation: 'In an Aura component bundle, JavaScript is utilized in the **Controller** (handles UI events), the **Helper** (reusable logic shared across the component), and the **Renderer** (overriding default rendering behaviors). `Design` is XML for Lightning App Builder configuration, and `Style` contains CSS.'
+    },
+    {
+        id: 512,
+        domain: 'Testing, Debugging & Deployment',
+        weight: '17%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'A developer needs to create a baseline set of data (Accounts, Contacts, Products, Assets) for an entire suite of Apex tests allowing them to test isolated requirements for various types of Salesforce cases. Which approach can efficiently generate the required data for each unit test?',
+        options: [
+            'Create test data before `Test.startTest()` in the unit test.',
+            'Create a mock using the `HttpCalloutMock` interface.',
+            'Add `@isTest(SeeAllData=true)` at the start of the unit test class.',
+            'Use `@TestSetup` with a void method.'
+        ],
+        correctAnswer: 3,
+        explanation: 'The `@TestSetup` annotation allows you to create test records once and make them available to every test method in the test class. This drastically reduces execution time and efficiently centralizes your baseline test data generation compared to creating data individually inside every test method.'
+    },
+    {
+        id: 323,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'Flow Builder uses an Apex action to provide additional information about multiple Contacts, stored in a custom class, `ContactInfo`. Which is the correct definition of the Apex method that gets the additional information?',
+        options: [
+            '`@InvocableMethod(label=\'Additional Info\') public static ContactInfo getInfo(Id contactId)`',
+            '`@InvocableMethod(label=\'Additional Info\') public static List<ContactInfo> getInfo(List<Id> contactIds)`',
+            '`@InvocableMethod(label=\'Additional Info\') public List<ContactInfo> getInfo(List<Id> contactIds)`',
+            '`@InvocableMethod(label=\'Additional Info\') public static List<ContactInfo> getInfo(Id contactId)`'
+        ],
+        correctAnswer: 1,
+        explanation: 'To expose an Apex method to Flow Builder as an Apex Action, it must be annotated with `@InvocableMethod` and it MUST be `public static` (or `global static`). Furthermore, because Flows operate in bulk context, the method MUST take a `List` of primitives, sObjects, or custom classes as its single input parameter, and return a `List` of primitives, sObjects, or custom classes.'
+    },
+    {
+        id: 324,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'Management asked for opportunities to be automatically created for accounts with annual revenue greater than $1,000,000. A developer created a trigger that loops through `Trigger.new`, executes a SOQL query inside the loop to check for existing opportunities, and runs `insert oppty;` inside the loop. Which two actions should the developer take to fix the code segment?',
+        options: [
+            'Query for existing opportunities outside the `for` loop.',
+            'Check if all the required fields for Opportunity are being added on creation.',
+            'Move the DML (`insert`) that saves opportunities outside the `for` loop.',
+            'Use `Database.query` to query the opportunities.'
+        ],
+        correctAnswers: [0, 2],
+        explanation: 'Placing SOQL queries or DML statements (`insert`, `update`, `delete`) inside a `for` loop is a critical anti-pattern in Salesforce that violates Governor Limits (`100 SOQL queries`, `150 DML statements`). To fix this, you must **bulkify** the trigger by querying data outside the loop into a `Map` or `List`, and moving the DML statement outside the loop to insert a `List<Opportunity>` collection all at once.'
+    },
+    {
+        id: 214,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'A developer needs to create a Roll-up Summary field on a custom object `Job_Application__c` that calculates the maximum `Expected_Salary__c` from all related `Candidate__c` records. What schema configuration is absolutely required before this field can be created?',
+        options: [
+            '`Candidate__c` must have a Lookup relationship field pointing to `Job_Application__c`.',
+            '`Job_Application__c` must be on the detail side of a Master-Detail relationship.',
+            '`Candidate__c` must have a Master-Detail relationship field pointing to `Job_Application__c`.',
+            'A junction object must exist between the two custom objects.'
+        ],
+        correctAnswer: 2,
+        explanation: 'Roll-up Summary fields can only be created on the **Master** (parent) object in a Master-Detail relationship. Therefore, the child object (`Candidate__c`) must contain a Master-Detail relationship field pointing upward to the parent (`Job_Application__c`).'
+    },
+    {
+        id: 325,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'multi',
+        question: 'Which TWO of the following automation actions will cause an object\'s `before update` and `after update` triggers to execute a second time during the exact same transaction? (Choose 2)',
+        options: [
+            'A Workflow Rule executing a Field Update.',
+            'A Process Builder or Record-Triggered Flow updating a field on the same record.',
+            'An Escalation Rule firing.',
+            'A Validation Rule failing.'
+        ],
+        correctAnswers: [0, 1],
+        explanation: 'According to the Salesforce Order of Execution (`V-T-V-A-W-P-E`), if a Workflow Rule or Flow Field Update modifies the record in the middle of the transaction (Step 9/10), the platform will automatically cycle back and fire the `before update` and `after update` triggers exactly ONE more time to allow custom code to respond to the declarative change.'
+    },
+    {
+        id: 413,
+        domain: 'User Interface (LWC & Aura)',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'What is the primary architectural benefit of utilizing Lightning Data Service (LDS) via standard components like `<lightning-record-view-form>` or `@wire(getRecord)` in LWC?',
+        options: [
+            'LDS allows developers to write complex SOSL search queries without Apex.',
+            'LDS automatically implements field-level security (FLS) and shares a centralized client-side cache, meaning if one component updates a record, all other components viewing that record update instantly without server trips.',
+            'LDS bypasses all sharing rules allowing guest users to edit records.',
+            'LDS provides a way to upload massive 50MB files directly to attachments.'
+        ],
+        correctAnswer: 1,
+        explanation: 'Lightning Data Service (LDS) acts as the client-side data cache for Salesforce UI. If multiple components on a page use LDS to view `Account A`, LDS fetches the data once from the server. If one component updates `Account A`, LDS updates its cache and instantly pushes the new data to all other components listening to `Account A`, ensuring data consistency and reducing server load.'
+    },
+    {
+        id: 513,
+        domain: 'Testing, Debugging & Deployment',
+        weight: '17%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer has built a custom Apex REST API service (`@RestResource(urlMapping=\'/AccountService/*\')`) with an `@HttpPost` method to accept external payloads. How should the developer structure the unit test to properly simulate the incoming HTTP request?',
+        options: [
+            'Implement the `HttpCalloutMock` interface and use `Test.setMock()`.',
+            'Instantiate a `RestRequest` and `RestResponse` object in the test, set their properties (`req.requestURI`, `req.requestBody`), and assign them to the global `RestContext` variables.',
+            'Use `System.runAs()` to execute the test as an Integration User.',
+            'Create a mock JSON file and upload it to Static Resources.'
+        ],
+        correctAnswer: 1,
+        explanation: 'When testing an Apex REST endpoint that you are hosting, you do not use `HttpCalloutMock` (which is only for outbound callouts). Instead, you directly instantiate `RestRequest req = new RestRequest();`, populate its body/URI, and assign it to `RestContext.request = req;`. Then, you simply call your `@HttpPost` method directly from the test.'
+    },
+    {
+        id: 326,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer is writing an optimization script to find all `Account` records that do NOT have any related `Contact` records in the system. What is the most efficient SOQL query syntax to achieve this using a Left Anti-Join?',
+        options: [
+            'SELECT Id FROM Account WHERE Contacts = null',
+            'SELECT Id FROM Account WHERE Id NOT IN (SELECT AccountId FROM Contact)',
+            'SELECT Id, (SELECT Id FROM Contacts) FROM Account WHERE Contacts.size() == 0',
+            'SELECT Id FROM Account LEFT JOIN Contact ON Contact.AccountId = null'
+        ],
+        correctAnswer: 1,
+        explanation: 'The most efficient way to query records that do NOT have related children is to use a SOQL Left Anti-Join subquery in the WHERE clause: `WHERE Id NOT IN (SELECT AccountId FROM ChildObject)`. SOQL does not support standard SQL `LEFT JOIN` syntax, and you cannot filter on `Contacts.size()` directly in SOQL.'
     }
 ];
 console.log(QUESTION_BANK.length);
