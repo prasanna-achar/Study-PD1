@@ -35,7 +35,7 @@ function initNavigation() {
 
 function switchSection(sectionId) {
     currentSection = sectionId;
-    
+
     // Update nav active class
     document.querySelectorAll('.nav-item button').forEach(btn => {
         if (btn.getAttribute('data-section') === sectionId) {
@@ -109,7 +109,7 @@ function updateDashboardStats() {
 // Start Quiz or Mock Exam
 function startPractice(filterDomain = null, isMock = false) {
     isMockExamMode = isMock;
-    
+
     if (isMock) {
         // Full 60-Question Mock Exam mode (Simulating actual exam distribution)
         activeQuestions = [...QUESTION_BANK].sort(() => 0.5 - Math.random()).slice(0, 60);
@@ -246,10 +246,10 @@ function renderCurrentQuestion() {
             </button>
             <div style="display: flex; gap: 12px;">
                 ${!answered ? `<button class="btn btn-primary" onclick="submitAnswer(${q.id})">Check Answer</button>` : ''}
-                ${currentQuestionIndex < activeQuestions.length - 1 ? 
-                    `<button class="btn btn-secondary" onclick="nextQuestion()">Next Question &rarr;</button>` : 
-                    `<button class="btn btn-primary" style="background: var(--gradient-green);" onclick="submitQuizResults()">Finish & Submit Exam ✔</button>`
-                }
+                ${currentQuestionIndex < activeQuestions.length - 1 ?
+            `<button class="btn btn-secondary" onclick="nextQuestion()">Next Question &rarr;</button>` :
+            `<button class="btn btn-primary" style="background: var(--gradient-green);" onclick="submitQuizResults()">Finish & Submit Exam ✔</button>`
+        }
             </div>
         </div>
     `;
@@ -262,11 +262,11 @@ function formatQuestionText(text) {
 
 function escapeHtml(unsafe) {
     return unsafe
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 // Option Selection Logic
@@ -428,10 +428,10 @@ function renderAllQuestionsView() {
     if (domainFilter !== 'all') {
         filteredQuestions = filteredQuestions.filter(q => q.domain === domainFilter);
     }
-    
+
     if (searchTerm) {
-        filteredQuestions = filteredQuestions.filter(q => 
-            q.question.toLowerCase().includes(searchTerm) || 
+        filteredQuestions = filteredQuestions.filter(q =>
+            q.question.toLowerCase().includes(searchTerm) ||
             q.explanation.toLowerCase().includes(searchTerm) ||
             q.options.some(opt => opt.toLowerCase().includes(searchTerm))
         );
@@ -453,12 +453,12 @@ function renderAllQuestionsView() {
 
     container.innerHTML = filteredQuestions.map((q, idx) => {
         const isRevealed = window.bankAnswersRevealed[q.id] || false;
-        
+
         // Format options
         const optionsHtml = q.options.map((opt, optIdx) => {
             const isCorrect = q.type === 'single' ? optIdx === q.correctAnswer : q.correctAnswers.includes(optIdx);
             const letter = String.fromCharCode(65 + optIdx);
-            
+
             if (isRevealed) {
                 // Highlighted correct answers
                 return `
@@ -515,7 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         const searchInput = document.getElementById('search-questions');
         const filterSelect = document.getElementById('filter-domain');
-        
+
         if (searchInput) searchInput.addEventListener('input', renderAllQuestionsView);
         if (filterSelect) filterSelect.addEventListener('change', renderAllQuestionsView);
     }, 500);

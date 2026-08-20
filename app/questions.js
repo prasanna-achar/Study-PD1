@@ -1213,6 +1213,102 @@ const QUESTION_BANK = [
         ],
         correctAnswer: 1,
         explanation: 'The most efficient way to query records that do NOT have related children is to use a SOQL Left Anti-Join subquery in the WHERE clause: `WHERE Id NOT IN (SELECT AccountId FROM ChildObject)`. SOQL does not support standard SQL `LEFT JOIN` syntax, and you cannot filter on `Contacts.size()` directly in SOQL.'
+    },
+    {
+        id: 327,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'Which Apex class contains methods to return the amount of resources that have been used for a particular governor limit, such as the number of DML statements?',
+        options: [
+            'OrgLimits',
+            'Limits',
+            'Messaging',
+            'Exception'
+        ],
+        correctAnswer: 1,
+        explanation: 'The `Limits` class contains methods (like `Limits.getDMLStatements()` and `Limits.getLimitDMLStatements()`) that return the exact amount of resources used so far and the maximum limit available for the current synchronous or asynchronous transaction.'
+    },
+    {
+        id: 414,
+        domain: 'User Interface (LWC & Aura)',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer is tasked with building a custom Lightning Web Component to collect Contact information. There are strict security requirements that only certain fields should be edited and viewed by certain groups of users. What should the developer use in their LWC to automatically respect these security requirements?',
+        options: [
+            '<aura:input-field>',
+            'force-input-field',
+            '<ui:input-field>',
+            '<lightning-input-field>'
+        ],
+        correctAnswer: 3,
+        explanation: 'When used inside a `<lightning-record-edit-form>`, the `<lightning-input-field>` component automatically enforces Field-Level Security (FLS) and Object CRUD permissions for the current user without requiring custom Apex to check `Schema.DescribeFieldResult` permissions.'
+    },
+    {
+        id: 215,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'Universal Containers has an external order system that uses a custom Order Number to uniquely identify an order for customers and service agents. Order records will be regularly imported and updated in Salesforce. How should the Order Number field be defined in Salesforce?',
+        options: [
+            'Indirect Lookup',
+            'Direct Lookup',
+            'External ID and Unique',
+            'Lookup'
+        ],
+        correctAnswer: 2,
+        explanation: 'To safely map external system IDs during imports and allow for `upsert` operations via Data Loader or integrations, the field should be marked as an `External ID`. Marking it as `Unique` prevents duplicate records during synchronization.'
+    },
+    {
+        id: 415,
+        domain: 'User Interface (LWC & Aura)',
+        weight: '25%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'Which code snippet correctly displays the contents of a Visualforce page as a PDF document?',
+        options: [
+            '<apex:page renderAs="application/pdf">',
+            '<apex:page renderAs="pdf">',
+            '<apex:page contentType="application/pdf">',
+            '<apex:page contentType="pdf">'
+        ],
+        correctAnswer: 1,
+        explanation: 'The `renderAs` attribute on the `<apex:page>` tag can be set to `"pdf"` to instantly instruct Salesforce to convert the Visualforce page rendering engine into a PDF generator.'
+    },
+    {
+        id: 514,
+        domain: 'Testing, Debugging & Deployment',
+        weight: '17%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'When using Salesforce DX for source-driven development, what does an administrator need to enable in the production organization to allow developers to create and manage scratch orgs?',
+        options: [
+            'Environment Hub',
+            'Dev Hub',
+            'Sandbox',
+            'Production'
+        ],
+        correctAnswer: 1,
+        explanation: 'The Dev Hub (Development Hub) must be enabled in your production or business org. It acts as the master control center that tracks and manages all ephemeral scratch orgs created by your development team using the Salesforce CLI.'
+    },
+    {
+        id: 515,
+        domain: 'Testing, Debugging & Deployment',
+        weight: '17%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'A development team wants to use a script to automatically deploy code to a sandbox during their continuous integration (CI) development cycles. Which two tools can they use to automate this script deployment? (Choose 2)',
+        options: [
+            'Developer Console',
+            'Ant Migration Tool',
+            'Salesforce CLI (SFDX)',
+            'Change Sets'
+        ],
+        correctAnswers: [1, 2],
+        explanation: 'The Salesforce CLI (SFDX) and the legacy Ant Migration Tool are command-line tools that can be invoked by CI/CD pipelines (like Jenkins or GitHub Actions) to automatically deploy metadata. Developer Console and Change Sets are manual, UI-based tools that cannot be automated via scripts.'
     }
 ];
 console.log(QUESTION_BANK.length);
