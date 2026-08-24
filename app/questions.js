@@ -1309,6 +1309,249 @@ const QUESTION_BANK = [
         ],
         correctAnswers: [1, 2],
         explanation: 'The Salesforce CLI (SFDX) and the legacy Ant Migration Tool are command-line tools that can be invoked by CI/CD pipelines (like Jenkins or GitHub Actions) to automatically deploy metadata. Developer Console and Change Sets are manual, UI-based tools that cannot be automated via scripts.'
+    },
+    // =========================================================================================
+    // BATCH 2: 15 NEW DUMP QUESTIONS
+    // =========================================================================================
+    {
+        id: 328,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer is creating a Lightning Web Component that queries and displays Account records. How can the developer ensure that the SOQL query only returns records the current user has access to see?',
+        options: [
+            'Use the `with sharing` keyword on the Apex class.',
+            'Use the `without sharing` keyword on the Apex class.',
+            'Use the `inherited sharing` keyword on the Apex class.',
+            'Use the `WITH SECURITY_ENFORCED` clause in the SOQL query.'
+        ],
+        correctAnswer: 3,
+        explanation: 'While `with sharing` enforces record-level sharing rules (which records you see), it does NOT enforce Field-Level Security (FLS) or Object CRUD permissions (which fields/objects you see). The `WITH SECURITY_ENFORCED` clause in a SOQL query ensures that both field and object-level security are respected during the query execution.'
+    },
+    {
+        id: 329,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which statement is true about the `@future` annotation in Apex?',
+        options: [
+            'Methods annotated with `@future` can take standard sObjects as arguments.',
+            'Methods annotated with `@future` must be declared as `static` and return `void`.',
+            'A `@future` method can call another `@future` method directly.',
+            '`@future` methods are guaranteed to execute in the order they were called.'
+        ],
+        correctAnswer: 1,
+        explanation: 'Future methods MUST be `static` and return `void`. They CANNOT accept sObjects as arguments (only primitive data types, collections of primitives, or collections of IDs) because the sObject might change in the database between the time the method is enqueued and when it actually executes.'
+    },
+    {
+        id: 516,
+        domain: 'Testing, Debugging & Deployment',
+        weight: '17%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'A developer needs to write a test class to verify a trigger that executes complex logic under a specific user\'s profile. Which Apex method should be used to simulate the execution context of a specific user?',
+        options: [
+            'System.runAs()',
+            'Test.setMock()',
+            'System.assertEquals()',
+            'Test.startTest()'
+        ],
+        correctAnswer: 0,
+        explanation: '`System.runAs(User u)` allows developers to execute code in the context of a specific user, enabling the testing of record sharing, profile permissions, and role hierarchy logic.'
+    },
+    {
+        id: 416,
+        domain: 'User Interface (LWC & Aura)',
+        weight: '25%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'A developer needs to make a property in a Lightning Web Component available to be set by administrators in the Lightning App Builder. Which decorator should the developer use?',
+        options: [
+            '@track',
+            '@wire',
+            '@api',
+            '@AuraEnabled'
+        ],
+        correctAnswer: 2,
+        explanation: 'The `@api` decorator exposes a property as public, making it reactive and allowing it to be configured via parent components or the Lightning App Builder when properly defined in the `.js-meta.xml` file.'
+    },
+    {
+        id: 216,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Universal Containers uses a custom object named `Project__c`. They want to automatically delete all related `Timecard__c` custom object records whenever a `Project__c` is deleted. What relationship type is required to achieve this?',
+        options: [
+            'Lookup Relationship',
+            'Hierarchical Relationship',
+            'External Lookup Relationship',
+            'Master-Detail Relationship'
+        ],
+        correctAnswer: 3,
+        explanation: 'A Master-Detail relationship tightly couples objects. When the parent (Master) record is deleted, all child (Detail) records are automatically deleted via a cascade delete.'
+    },
+    {
+        id: 330,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer wants to process 10,000 Opportunity records sequentially via a batch job and needs to preserve a running total (a counter) across all the `execute()` batches. What must be added to the Batch Apex class?',
+        options: [
+            'Implement the `Database.AllowsCallouts` interface.',
+            'Declare the counter variable with the `static` keyword.',
+            'Implement the `Database.Stateful` interface.',
+            'Use a Custom Setting to store the counter.'
+        ],
+        correctAnswer: 2,
+        explanation: 'By default, Batch Apex is stateless, meaning instance variables lose their values between `execute()` chunks. Implementing the `Database.Stateful` interface allows instance variables to retain their state across multiple batch executions.'
+    },
+    {
+        id: 417,
+        domain: 'User Interface (LWC & Aura)',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which Lightning component feature is used to communicate between two unconnected Lightning Web Components on the same page (e.g., a component in the header and a component in the sidebar)?',
+        options: [
+            'Custom Events',
+            'Application Events',
+            'Lightning Message Service (LMS)',
+            'Component Events'
+        ],
+        correctAnswer: 2,
+        explanation: 'Lightning Message Service (LMS) is the standard publish-subscribe architecture used to communicate across the DOM between unconnected components (LWC, Aura, and even Visualforce pages).'
+    },
+    {
+        id: 331,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'What is the maximum number of SOQL queries allowed within a single synchronous Apex transaction?',
+        options: [
+            '50',
+            '100',
+            '150',
+            '200'
+        ],
+        correctAnswer: 1,
+        explanation: 'Salesforce enforces a strict synchronous limit of 100 SOQL queries per transaction. (Asynchronous transactions are allowed 200 SOQL queries).'
+    },
+    {
+        id: 517,
+        domain: 'Testing, Debugging & Deployment',
+        weight: '17%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'When deploying code to production, what is the minimum required overall Apex test coverage for the organization?',
+        options: [
+            '100%',
+            '85%',
+            '75%',
+            '50%'
+        ],
+        correctAnswer: 2,
+        explanation: 'Salesforce requires that at least 75% of your Apex code is covered by unit tests, and all those tests must complete successfully before deploying to production.'
+    },
+    {
+        id: 217,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'Which tool allows a developer or administrator to visually map out, create, and modify objects and relationships in Salesforce without writing code?',
+        options: [
+            'Data Loader',
+            'Schema Builder',
+            'Process Builder',
+            'Flow Builder'
+        ],
+        correctAnswer: 1,
+        explanation: 'Schema Builder provides a dynamic environment to view the data model and quickly create custom objects, custom fields, and relationships via a drag-and-drop UI.'
+    },
+    {
+        id: 332,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer needs to dynamically construct a SOQL query at runtime using variables provided by the user. Which Apex method should they use to execute the dynamically generated string?',
+        options: [
+            'Database.query()',
+            'System.query()',
+            'Database.executeBatch()',
+            'Database.search()'
+        ],
+        correctAnswer: 0,
+        explanation: '`Database.query()` is used to execute Dynamic SOQL. It takes a string representing the query at runtime and returns a list of sObjects.'
+    },
+    {
+        id: 333,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'When an exception is thrown in a try block, what happens if the catch block also throws an exception?',
+        options: [
+            'The original exception is caught by the system and logged.',
+            'The finally block is bypassed.',
+            'The finally block executes, and then the new exception halts execution.',
+            'The transaction rolls back automatically without executing finally.'
+        ],
+        correctAnswer: 2,
+        explanation: 'In Apex, the `finally` block is guaranteed to execute regardless of whether an exception is thrown in the `try` or `catch` blocks. If the `catch` block throws an exception, the `finally` block runs first, and then the uncaught exception terminates the transaction.'
+    },
+    {
+        id: 418,
+        domain: 'User Interface (LWC & Aura)',
+        weight: '25%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'In a Lightning Web Component, which lifecycle hook is fired immediately after the component is inserted into the Document Object Model (DOM)?',
+        options: [
+            'constructor()',
+            'connectedCallback()',
+            'renderedCallback()',
+            'disconnectedCallback()'
+        ],
+        correctAnswer: 1,
+        explanation: '`connectedCallback()` fires when a component is inserted into the DOM. It is commonly used to perform initialization tasks like fetching data.'
+    },
+    {
+        id: 518,
+        domain: 'Testing, Debugging & Deployment',
+        weight: '17%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer wants to test a Trigger that prevents Accounts from being deleted if they have active Opportunities. What should the developer use to verify that the Trigger successfully threw an error during testing?',
+        options: [
+            'Test.isRunningTest()',
+            'System.assert(false)',
+            'try-catch block wrapping the DML statement',
+            'Test.getEventBus()'
+        ],
+        correctAnswer: 2,
+        explanation: 'When testing `addError` logic on a trigger, you must execute the DML (e.g., `delete acc;`) inside a `try-catch` block. The test can then assert that a `DmlException` was caught and verify the exception message.'
+    },
+    {
+        id: 218,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'What is a valid reason why an Administrator would be unable to change a Lookup relationship field to a Master-Detail relationship field?',
+        options: [
+            'There is existing data in the object that has a null value for the lookup field.',
+            'The object already has two Master-Detail relationships.',
+            'Both A and B',
+            'Master-Detail relationships cannot be created on Standard Objects.'
+        ],
+        correctAnswer: 2,
+        explanation: 'To convert a Lookup to a Master-Detail, all existing records MUST have a value in that lookup field (it cannot be null). Additionally, custom objects are limited to a maximum of 2 Master-Detail relationships.'
     }
 ];
 console.log(QUESTION_BANK.length);
