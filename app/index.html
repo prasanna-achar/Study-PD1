@@ -35,6 +35,11 @@
                 </button>
             </li>
             <li class="nav-item">
+                <button data-section="sequential-blocks">
+                    <span>🧱</span> Sequential Blocks (30 Qs)
+                </button>
+            </li>
+            <li class="nav-item">
                 <button data-section="sandbox">
                     <span>⚡</span> Governor Limit Sandbox
                 </button>
@@ -254,6 +259,20 @@
             </div>
         </section>
 
+        <!-- SECTION: SEQUENTIAL BLOCKS -->
+        <section id="section-sequential-blocks" class="view-section">
+            <div class="page-header">
+                <div>
+                    <h2>Sequential Practice Blocks</h2>
+                    <p>Go through the entire question bank in blocks of 30 to ensure you don't miss a single question.</p>
+                </div>
+            </div>
+            
+            <div id="sequential-blocks-list" class="grid-3">
+                <!-- Dynamically populated via app.js -->
+            </div>
+        </section>
+
         <!-- SECTION: ACTIVE QUIZ CONTAINER -->
         <section id="section-quiz" class="view-section">
             <div class="quiz-top-bar">
@@ -263,6 +282,14 @@
                 </div>
                 <div class="timer-box">
                     <span>⏱️</span> <span id="timer-display">15:00</span>
+                </div>
+            </div>
+
+            <!-- Question Navigator -->
+            <div class="glass-card" style="margin-bottom: 24px; padding: 16px;">
+                <h4 style="font-size: 14px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600;">Question Navigator (Blue = Answered)</h4>
+                <div id="question-navigator" class="question-navigator">
+                    <!-- Populated via app.js -->
                 </div>
             </div>
 

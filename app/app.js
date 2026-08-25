@@ -60,6 +60,8 @@ function switchSection(sectionId) {
         renderBookmarksView();
     } else if (sectionId === 'all-questions') {
         renderAllQuestionsView();
+    } else if (sectionId === 'sequential-blocks') {
+        renderSequentialBlocksView();
     }
 }
 
@@ -107,17 +109,42 @@ function updateDashboardStats() {
 }
 
 // Start Quiz or Mock Exam
-function startPractice(filterDomain = null, isMock = false) {
+function startPractice(filterDomain = null, isMock = false, blockIndex = null) {
     isMockExamMode = isMock;
 
     if (isMock) {
         // Full 60-Question Mock Exam mode (Simulating actual exam distribution)
-        activeQuestions = [...QUESTION_BANK].sort(() => 0.5 - Math.random()).slice(0, 60);
+        const domainLimits = {
+            'Process Automation & Apex Logic': 23, // 38%
+            'User Interface (LWC & Aura)': 15,     // 25%
+            'Testing, Debugging & Deployment': 10, // 17%
+            'Data Modeling & Management': 8,       // 13%
+            'Salesforce Fundamentals': 4           // 7%
+        };
+        
+        let mockQuestions = [];
+        for (const [domain, limit] of Object.entries(domainLimits)) {
+            const domainQuestions = QUESTION_BANK.filter(q => q.domain === domain)
+                                                 .sort(() => 0.5 - Math.random())
+                                                 .slice(0, limit);
+            mockQuestions.push(...domainQuestions);
+        }
+        
+        // Shuffle the final 60 questions so domains are mixed
+        activeQuestions = mockQuestions.sort(() => 0.5 - Math.random());
         timeRemaining = 105 * 60; // 105 minutes in seconds
         startTimer();
     } else if (filterDomain) {
         // Domain specific practice
         activeQuestions = QUESTION_BANK.filter(q => q.domain === filterDomain);
+        timeRemaining = activeQuestions.length * 90; // 1.5 mins per question
+        startTimer();
+    } else if (blockIndex !== null) {
+        // Sequential block practice
+        const blockSize = 30;
+        const start = blockIndex * blockSize;
+        const end = start + blockSize;
+        activeQuestions = QUESTION_BANK.slice(start, end);
         timeRemaining = activeQuestions.length * 90; // 1.5 mins per question
         startTimer();
     } else {
@@ -253,6 +280,41 @@ function renderCurrentQuestion() {
             </div>
         </div>
     `;
+
+    // Render the question navigator panel
+    renderQuestionNavigator();
+}
+
+function renderQuestionNavigator() {
+    const navContainer = document.getElementById('question-navigator');
+    if (!navContainer) return;
+
+    navContainer.innerHTML = activeQuestions.map((q, idx) => {
+        let btnClass = 'nav-btn';
+        
+        // Determine if answered (has a selection)
+        let hasSelection = userAnswers[q.id] !== undefined;
+        if (q.type === 'multi') {
+            hasSelection = Array.isArray(userAnswers[q.id]) && userAnswers[q.id].length > 0;
+        }
+
+        if (isAnswered[q.id] || hasSelection) {
+            btnClass += ' answered';
+        }
+        
+        if (idx === currentQuestionIndex) {
+            btnClass += ' active';
+        }
+        
+        return `<button class="${btnClass}" onclick="jumpToQuestion(${idx})">${idx + 1}</button>`;
+    }).join('');
+}
+
+function jumpToQuestion(index) {
+    if (index >= 0 && index < activeQuestions.length) {
+        currentQuestionIndex = index;
+        renderCurrentQuestion();
+    }
 }
 
 function formatQuestionText(text) {
@@ -348,10 +410,23 @@ function submitQuizResults() {
     const percentage = Math.round((correctCount / activeQuestions.length) * 100);
     const passed = percentage >= 68; // 68% passing score for PD1
 
+    // Determine mode name for history
+    let attemptMode = 'Practice Quiz';
+    if (isMockExamMode) {
+        attemptMode = 'Full 60-Question Mock Exam';
+    } else if (activeQuestions.length === 30 && QUESTION_BANK.includes(activeQuestions[0])) {
+        // Heuristic to detect block practice
+        attemptMode = 'Sequential Block Practice';
+    } else if (activeQuestions.length === 10) {
+        attemptMode = 'Quick 10-Question Quiz';
+    } else {
+        attemptMode = 'Domain Practice Quiz';
+    }
+
     // Save attempt to history
     quizHistory.push({
         date: new Date().toISOString(),
-        mode: isMockExamMode ? 'Full 60-Question Mock Exam' : 'Domain Practice Quiz',
+        mode: attemptMode,
         correct: correctCount,
         total: activeQuestions.length,
         percentage: percentage
@@ -415,6 +490,34 @@ function renderBookmarksView() {
         </div>
     `).join('');
 }
+
+// Render Sequential Blocks View
+function renderSequentialBlocksView() {
+    const container = document.getElementById('sequential-blocks-list');
+    if (!container) return;
+    
+    const blockSize = 30;
+    const totalBlocks = Math.ceil(QUESTION_BANK.length / blockSize);
+    
+    let html = '';
+    for (let i = 0; i < totalBlocks; i++) {
+        const start = i * blockSize + 1;
+        const end = Math.min((i + 1) * blockSize, QUESTION_BANK.length);
+        const count = end - start + 1;
+        
+        html += `
+            <div class="glass-card">
+                <span class="badge badge-domain" style="margin-bottom: 12px; display: inline-block;">Block ${i + 1}</span>
+                <h3 style="font-size: 22px; font-family: 'Outfit', sans-serif; margin-bottom: 8px;">Questions ${start} - ${end}</h3>
+                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Practice this sequential block of ${count} questions to guarantee complete coverage without randomization.</p>
+                <button class="btn btn-primary" style="background: var(--gradient-brand);" onclick="startPractice(null, false, ${i})">Start Block ${i + 1} &rarr;</button>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+}
+
 // Render Master Question Bank View
 function renderAllQuestionsView() {
     const container = document.getElementById('all-questions-list');

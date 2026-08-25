@@ -1603,6 +1603,537 @@ const QUESTION_BANK = [
         ],
         correctAnswer: 0,
         explanation: 'To programmatically invoke Prompt Builder templates or generative AI models from Apex, developers use the `ConnectApi` namespace, specifically methods found within the `ConnectApi.EinsteinLLM` or `ConnectApi.PromptGeneration` classes.'
+    },
+    {
+        id: 701,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which type of relationship should be used to link a custom object to the standard User object?',
+        options: [
+            'Master-Detail relationship',
+            'Lookup relationship',
+            'Hierarchical relationship',
+            'Indirect Lookup relationship'
+        ],
+        correctAnswer: 1,
+        explanation: 'You can only create a Lookup relationship to the standard User object. Master-Detail relationships are not supported where the User object is the Master. A Hierarchical relationship is a special type of Lookup that is only available ON the User object itself (linking a User to another User).'
+    },
+    {
+        id: 702,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'What is the correct syntax for declaring a variable that holds a set of Account IDs?',
+        options: [
+            'Set<Id> accountIds = new Set<Id>();',
+            'Set accountIds = new Set<Id>();',
+            'List<Id> accountIds = new Set<Id>();',
+            'Map<Id> accountIds = new Map<Id>();'
+        ],
+        correctAnswer: 0,
+        explanation: 'To declare a Set collection of primitive Id values, the correct syntax is `Set<Id> collectionName = new Set<Id>();`.'
+    },
+    {
+        id: 703,
+        domain: 'User Interface (LWC & Aura)',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'Which of the following are valid lifecycle hooks in a Lightning Web Component? (Choose 2)',
+        options: [
+            'connectedCallback()',
+            'onRender()',
+            'disconnectedCallback()',
+            'init()'
+        ],
+        correctAnswers: [0, 2],
+        explanation: 'The standard LWC lifecycle hooks include constructor(), connectedCallback(), renderedCallback(), disconnectedCallback(), and errorCallback(). init() is used in Aura components, not LWC.'
+    },
+    // =========================================================================================
+    // BATCH 5: DEEP-DIVE QUESTIONS FROM APEX NOTES (PHASES 1-5)
+    // =========================================================================================
+    {
+        id: 801,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'In Apex, what is the default value of an uninitialized `Integer` variable?\n\nInteger count;\nSystem.debug(count);',
+        options: [
+            '0',
+            'false',
+            'null',
+            'An empty string (\'\')'
+        ],
+        correctAnswer: 2,
+        explanation: 'Unlike Java or C++ where primitives default to 0 or false, ALL Apex variables (including Integer, Boolean, Decimal, and String) default to `null` when declared without initialization. Attempting to call methods on them without checking for null throws a `System.NullPointerException`.'
+    },
+    {
+        id: 802,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer writes the following Apex code:\n\nString s = \'Hello\';\ns += \' World\';\n\nWhat happens in memory when the second line executes?',
+        options: [
+            'The original String object \'Hello\' is modified in-place to become \'Hello World\'.',
+            'A brand new String object \'Hello World\' is created in memory and the variable `s` is reassigned to point to it, because Strings in Apex are immutable.',
+            'The compiler throws an error because the `+=` operator is not supported for Strings.',
+            'The original String is extended using a mutable character buffer.'
+        ],
+        correctAnswer: 1,
+        explanation: 'Strings in Apex are immutable. When you concatenate using `+=`, a completely new String object is created in heap memory and the variable reference is updated. The old \'Hello\' string becomes eligible for garbage collection.'
+    },
+    {
+        id: 803,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'What is the key difference between `String.isEmpty(str)` and `String.isBlank(str)` in Apex?',
+        options: [
+            'They are identical and interchangeable.',
+            '`isEmpty()` returns true for `null` or `\'\'` only. `isBlank()` returns true for `null`, `\'\'`, AND strings containing only whitespace (`\'   \'`).',
+            '`isBlank()` only checks for `null`. `isEmpty()` checks for `null` and empty strings.',
+            '`isEmpty()` is deprecated and should never be used.'
+        ],
+        correctAnswer: 1,
+        explanation: '`String.isEmpty(str)` checks if the string is null or an empty string (\'\'), while `String.isBlank(str)` additionally returns true if the string contains ONLY whitespace characters (\'   \'). Best practice is to always use `isBlank()` / `isNotBlank()` when validating user input.'
+    },
+    {
+        id: 804,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer wants to safely access a method on a variable that might be null without writing an explicit `if (variable != null)` check. Which Apex operator should they use?\n\nString companyName; // null\nInteger length = companyName?.length();',
+        options: [
+            'The Null Coalescing Operator (`??`)',
+            'The Safe Navigation Operator (`?.`)',
+            'The Ternary Operator (`? :`)',
+            'The Elvis Operator (`?:`)'
+        ],
+        correctAnswer: 1,
+        explanation: 'The Safe Navigation Operator (`?.`) short-circuits if the left-hand operand is null and returns null instead of throwing a `System.NullPointerException`. Example: `companyName?.length()` returns `null` if companyName is null, rather than crashing.'
+    },
+    {
+        id: 805,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer needs to process 40,000 Account records from a SOQL query without exceeding the 6 MB Apex Heap Size governor limit. Which query pattern should the developer use?',
+        options: [
+            'List<Account> accs = [SELECT Id, Name FROM Account]; // Load all 40,000 into memory',
+            'Use a SOQL `for` loop that processes records in chunks of 200: `for (List<Account> chunk : [SELECT Id, Name FROM Account]) { ... }`',
+            'Use `LIMIT 200` and `OFFSET` to paginate manually in a while loop.',
+            'Use `Database.getQueryLocator()` inside a synchronous method.'
+        ],
+        correctAnswer: 1,
+        explanation: 'A SOQL `for` loop (`for (List<sObject> chunk : [SOQL])`) automatically processes query results in internal batches of 200 records at a time, keeping only 200 records in heap memory at any point. This allows processing up to 50,000 records without exceeding the 6 MB heap size limit.'
+    },
+    {
+        id: 806,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'In Apex, which keyword must be applied to a class declaration to allow other classes to extend it using the `extends` keyword?',
+        options: [
+            'The class must be declared as `abstract`.',
+            'The class must be declared as `virtual`.',
+            'The class must be declared as `global`.',
+            'All Apex classes can be extended by default without any special keyword.'
+        ],
+        correctAnswer: 1,
+        explanation: 'By default, Apex classes and methods are final (cannot be extended or overridden). You must explicitly declare the class as `virtual` (if it has concrete method implementations) or `abstract` (if it has abstract method signatures) to allow inheritance via `extends`.'
+    },
+    {
+        id: 807,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'What is the fundamental difference between an `abstract` class and an `interface` in Apex?',
+        options: [
+            'An abstract class can contain both concrete methods (with bodies) and abstract methods (without bodies), while an interface can ONLY contain method signatures without any implementation.',
+            'An interface can contain concrete methods, but an abstract class cannot.',
+            'A class can extend multiple abstract classes but can only implement one interface.',
+            'There is no difference; they are interchangeable in Apex.'
+        ],
+        correctAnswer: 0,
+        explanation: 'An `abstract` class can have a mix of fully implemented concrete methods and abstract method signatures that subclasses must override. An `interface` is a pure contract — it contains ONLY method signatures (no bodies), and all implementing classes must provide full implementations. A class can implement multiple interfaces but can only extend one abstract/virtual class.'
+    },
+    {
+        id: 808,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'What does the `this(...)` syntax accomplish inside an Apex constructor?',
+        options: [
+            'It calls a parent class constructor via inheritance.',
+            'It enables constructor chaining by calling another constructor within the same class.',
+            'It references the current trigger context.',
+            'It creates a new instance of the same class recursively.'
+        ],
+        correctAnswer: 1,
+        explanation: 'In Apex, `this(param1, param2)` inside a constructor calls another constructor of the same class (constructor chaining). For example, a default constructor `public MyClass() { this(\'DEFAULT\', 0); }` delegates to a parameterized constructor. To call a parent class constructor, you use `super(...)` instead.'
+    },
+    {
+        id: 809,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'Which SOQL date literal returns all records created on exactly today\'s date?',
+        options: [
+            'WHERE CreatedDate = CURRENT_DATE',
+            'WHERE CreatedDate = TODAY',
+            'WHERE CreatedDate = DATE.today()',
+            'WHERE CreatedDate = SYSDATE'
+        ],
+        correctAnswer: 1,
+        explanation: 'Salesforce provides built-in SOQL date literals like `TODAY`, `YESTERDAY`, `TOMORROW`, `LAST_N_DAYS:n`, `THIS_WEEK`, `THIS_MONTH`, and `THIS_FISCAL_YEAR`. `TODAY` filters records matching exactly today\'s date in the running user\'s time zone.'
+    },
+    {
+        id: 810,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer adds `FOR UPDATE` at the end of a SOQL query:\n\nAccount acc = [SELECT Id, Name FROM Account WHERE Id = :accId FOR UPDATE];\n\nWhat is the effect of this clause?',
+        options: [
+            'It forces the query to bypass sharing rules and run in System Mode.',
+            'It places a database-level row lock on the retrieved records, preventing other concurrent transactions from modifying them until the current transaction commits or rolls back.',
+            'It automatically updates the `LastModifiedDate` on the retrieved records.',
+            'It enables the query to return records from the Recycle Bin.'
+        ],
+        correctAnswer: 1,
+        explanation: '`FOR UPDATE` is a SOQL locking clause. When used, the database places an exclusive row lock on all retrieved records for the duration of the current transaction. This prevents race conditions where two concurrent users attempt to modify the same record simultaneously.'
+    },
+    {
+        id: 811,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer appends `WITH USER_MODE` to a SOQL query. What security enforcement does this enable?\n\nList<Account> accs = [SELECT Id, Name, Salary__c FROM Account WITH USER_MODE];',
+        options: [
+            'It enforces only record-level sharing rules (`with sharing`).',
+            'It enforces both Object-level CRUD permissions AND Field-Level Security (FLS) for the running user at query execution time.',
+            'It bypasses all security and runs the query in System Mode.',
+            'It encrypts the query results using Platform Encryption.'
+        ],
+        correctAnswer: 1,
+        explanation: 'By default, SOQL in Apex runs in System Mode, ignoring the running user\'s Object/Field permissions. Adding `WITH USER_MODE` enforces both Object CRUD and Field-Level Security (FLS) at query time. If the user lacks Read access to `Salary__c`, the query throws a `QueryException` or strips the inaccessible field.'
+    },
+    {
+        id: 812,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'When constructing a Parent-to-Child SOQL subquery for a custom child object `Invoice_Line__c` related to `Invoice__c`, how do you determine the correct relationship name to use inside the subquery?',
+        options: [
+            'Use the API name of the child object directly (`Invoice_Line__c`).',
+            'Look up the Child Relationship Name on the relationship field definition and append `__r` (e.g., `Invoice_Lines__r`).',
+            'Use the child object label in plural form.',
+            'Replace `__c` with `__s` on the child object name.'
+        ],
+        correctAnswer: 1,
+        explanation: 'For custom relationship subqueries, you must find the Child Relationship Name defined on the lookup/master-detail field in Object Manager, then append `__r`. For standard relationships (like Account -> Contacts), use the built-in plural relationship name (e.g., `Contacts`, `Opportunities`).'
+    },
+    {
+        id: 813,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'After a developer calls `Database.rollback(sp)` to undo a previously inserted Account record, what happens to the `Id` field on the in-memory Account variable?',
+        options: [
+            'The `Id` field is automatically cleared to `null` by the platform.',
+            'The `Id` field REMAINS populated on the in-memory variable even though the record no longer exists in the database. The developer must manually set `acc.Id = null;` before re-inserting.',
+            'The Account variable is completely destroyed and cannot be referenced again.',
+            'A `System.RollbackException` is thrown automatically.'
+        ],
+        correctAnswer: 1,
+        explanation: '`Database.rollback(sp)` only undoes database-level DML changes. It does NOT modify in-memory Apex variables. After rollback, the Account variable\'s `Id` property still contains the (now-invalid) ID. Attempting to update or re-insert the variable without clearing `.Id = null` will throw an error.'
+    },
+    {
+        id: 814,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'What exception is thrown when a SOQL query returns zero rows and the result is assigned directly to a single sObject variable?\n\nAccount a = [SELECT Id FROM Account WHERE Name = \'NonExistent\' LIMIT 1];',
+        options: [
+            'System.NullPointerException',
+            'System.DmlException',
+            'System.QueryException: List has no rows for assignment to SObject',
+            'No exception; `a` is simply set to `null`.'
+        ],
+        correctAnswer: 2,
+        explanation: 'When a SOQL query returning zero results is assigned directly to a single sObject variable (not a List), Salesforce throws `System.QueryException: List has no rows for assignment to SObject`. Best practice: always assign to a `List<sObject>` first, then check `if (!list.isEmpty())` before accessing elements.'
+    },
+    {
+        id: 815,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer needs to run a Batch Apex job every day at midnight. Which Apex interface and scheduling mechanism should be used?',
+        options: [
+            'Implement `Database.Batchable` and schedule it directly using `Database.executeBatch()` with a timer parameter.',
+            'Create a separate class implementing the `Schedulable` interface, and inside its `execute()` method call `Database.executeBatch()`. Schedule it using `System.schedule()` with a CRON expression.',
+            'Annotate the Batch class with `@Scheduled(cron=\'0 0 0 * * ?\')`.',
+            'Use a `@future` method with a `delay` parameter.'
+        ],
+        correctAnswer: 1,
+        explanation: 'Batch Apex cannot schedule itself directly. You must create a separate class implementing `Schedulable`, and inside its `execute(SchedulableContext sc)` method, invoke `Database.executeBatch(new MyBatch())`. Then schedule it programmatically: `System.schedule(\'Daily Job\', \'0 0 0 * * ?\', new MySchedulable());`.'
+    },
+    {
+        id: 816,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer builds a custom Apex REST API using `@RestResource(urlMapping=\'/AccountManager/*\')`. Which access modifier must be used on the class?',
+        options: [
+            'public',
+            'private',
+            'global',
+            'protected'
+        ],
+        correctAnswer: 2,
+        explanation: 'Classes annotated with `@RestResource` must be declared as `global` because they are exposed to external systems outside the Salesforce namespace boundary. Methods within (annotated with `@HttpGet`, `@HttpPost`, etc.) must also be `global static`.'
+    },
+    {
+        id: 817,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'Before making an outbound HTTP callout from Apex to an external endpoint (`https://api.example.com`), what must a Salesforce administrator configure in Setup?',
+        options: [
+            'Create a Connected App for the external URL.',
+            'Add the external URL to Remote Site Settings or configure a Named Credential.',
+            'Enable the Streaming API for the external domain.',
+            'Create a Platform Event for the callout.'
+        ],
+        correctAnswer: 1,
+        explanation: 'Salesforce blocks all outbound HTTP requests by default. The target endpoint domain must be whitelisted either in Remote Site Settings (basic URL whitelist) or via Named Credentials (which also store authentication credentials securely).'
+    },
+    {
+        id: 818,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A Batch Apex class needs to make HTTP callouts to an external API during the `execute()` method. What additional interface must the class implement alongside `Database.Batchable<sObject>`?',
+        options: [
+            'Database.Stateful',
+            'Database.AllowsCallouts',
+            'Queueable',
+            'HttpCalloutMock'
+        ],
+        correctAnswer: 1,
+        explanation: 'By default, Batch Apex does not allow HTTP callouts. To enable callouts inside the `execute()` method, the batch class must implement the `Database.AllowsCallouts` marker interface: `public class MyBatch implements Database.Batchable<sObject>, Database.AllowsCallouts { ... }`.'
+    },
+    {
+        id: 819,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'Inside a Queueable Apex `execute()` method, how many child Queueable jobs can be enqueued using `System.enqueueJob()` (in a non-test context)?',
+        options: [
+            'Unlimited chaining is allowed.',
+            'Exactly 1 child Queueable job can be enqueued per `execute()` invocation.',
+            'Up to 5 child Queueable jobs can be enqueued.',
+            'Chaining Queueable jobs is not allowed.'
+        ],
+        correctAnswer: 1,
+        explanation: 'In production (non-test) contexts, a Queueable job can enqueue exactly 1 child Queueable job from within its `execute()` method. This allows building sequential job chains that reset governor limits at each step. In test contexts (`@isTest`), chaining depth is limited to prevent infinite loops.'
+    },
+    {
+        id: 820,
+        domain: 'Testing, Debugging & Deployment',
+        weight: '17%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer wants to load test data from a CSV file stored as a Static Resource instead of manually creating records in the test method. Which method should they use?',
+        options: [
+            'Test.loadData(Account.sObjectType, \'MyStaticResourceName\')',
+            'Database.loadCSV(\'MyStaticResourceName\')',
+            'Test.importData(Account.class, \'MyStaticResourceName\')',
+            'System.loadStaticResource(\'MyStaticResourceName\')'
+        ],
+        correctAnswer: 0,
+        explanation: '`Test.loadData(sObjectToken, staticResourceName)` loads records from a CSV file stored as a Static Resource and inserts them into the test database. This is useful when you need large, complex, or realistic test data sets without writing verbose `new Account(...)` statements.'
+    },
+    {
+        id: 821,
+        domain: 'Testing, Debugging & Deployment',
+        weight: '17%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer needs to strip out fields that the current user does not have permission to create before performing a DML insert. Which Apex method should be used?',
+        options: [
+            'Schema.sObjectType.Account.fields.Name.isCreateable()',
+            'Security.stripInaccessible(AccessType.CREATABLE, recordList)',
+            'Database.insert(records, AccessLevel.USER_MODE)',
+            'Both B and C are valid approaches.'
+        ],
+        correctAnswer: 3,
+        explanation: 'There are two valid modern approaches: `Security.stripInaccessible(AccessType.CREATABLE, records)` which returns sanitized records with inaccessible fields removed, and `Database.insert(records, false, AccessLevel.USER_MODE)` which enforces FLS at DML time. Option A only checks a single field but doesn\'t strip anything.'
+    },
+    {
+        id: 822,
+        domain: 'Testing, Debugging & Deployment',
+        weight: '17%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'A developer adds `@isTest(SeeAllData=true)` to a test class. What is the effect of this annotation?',
+        options: [
+            'The test class can access real production/sandbox data during test execution.',
+            'The test class runs with elevated System Administrator permissions.',
+            'The test class automatically generates 200 test records for every sObject.',
+            'The test class bypasses all governor limits.'
+        ],
+        correctAnswer: 0,
+        explanation: 'By default, test methods cannot see org data. `@isTest(SeeAllData=true)` allows the test to query and access real records in the org. However, this is strongly discouraged as best practice because tests become dependent on existing data, making them fragile and non-portable across environments.'
+    },
+    {
+        id: 823,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer attempts to insert a User record (setup object) and an Account record (non-setup object) in the same synchronous Apex transaction:\n\ninsert new User(...);\ninsert new Account(...);\n\nWhat error occurs?',
+        options: [
+            'System.DmlException: MIXED_DML_OPERATION — DML on setup and non-setup objects cannot be performed in the same transaction.',
+            'System.LimitException: Too many DML statements.',
+            'No error; both records are inserted successfully.',
+            'System.SecurityException: Insufficient privileges.'
+        ],
+        correctAnswer: 0,
+        explanation: 'Salesforce prohibits DML operations on setup objects (User, Group, PermissionSet) and non-setup objects (Account, Contact) in the same synchronous transaction. This throws a `MIXED_DML_OPERATION` error. To work around this, perform one of the DML operations inside an `@future` method or `Queueable` job.'
+    },
+    {
+        id: 824,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'What is the maximum value of the SOQL `OFFSET` clause for paginating query results?',
+        options: [
+            '500',
+            '1,000',
+            '2,000',
+            '5,000'
+        ],
+        correctAnswer: 2,
+        explanation: 'The SOQL `OFFSET` clause skips the first N rows before returning results. The maximum allowed OFFSET value is 2,000. For deeper pagination beyond 2,000 records, developers should use `WHERE Id > :lastRecordId ORDER BY Id LIMIT n` (keyset pagination).'
+    },
+    {
+        id: 825,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer needs to query Tasks where the `WhoId` polymorphic field could reference either a Contact or a Lead, and needs to retrieve object-specific fields depending on the type. Which SOQL clause enables this?',
+        options: [
+            'Use a standard Parent-to-Child subquery on the Task object.',
+            'Use the `TYPEOF` clause inside the `SELECT` statement to conditionally select fields based on the referenced object type.',
+            'Use `instanceof` checks inside a for loop after querying.',
+            'Polymorphic queries are not supported in SOQL.'
+        ],
+        correctAnswer: 1,
+        explanation: 'The `TYPEOF` clause in SOQL allows querying polymorphic lookup fields (like `Task.WhoId` or `Event.WhatId`) and selecting different fields depending on which object type the lookup references. Example: `SELECT TYPEOF Who WHEN Contact THEN FirstName, LastName WHEN Lead THEN Company END FROM Task`.'
+    },
+    {
+        id: 826,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer declares a utility class as `public inherited sharing class DataService { ... }`. If this class is called from a `without sharing` controller class, what sharing mode does `DataService` execute under?',
+        options: [
+            'It always defaults to `with sharing` regardless of the caller.',
+            'It inherits `without sharing` from the calling class.',
+            'It runs in System Mode with no sharing enforcement.',
+            'It throws a compile error because `inherited sharing` cannot be used with `public`.'
+        ],
+        correctAnswer: 1,
+        explanation: 'A class declared with `inherited sharing` dynamically adopts the sharing mode of the class that called it. If called from a `without sharing` class, it runs as `without sharing`. If called from a `with sharing` class, it runs as `with sharing`. If it is the top-level entry point (e.g., invoked from LWC), it defaults to `with sharing`.'
+    },
+    {
+        id: 827,
+        domain: 'Data Modeling & Management',
+        weight: '13%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'What is the difference between `SELECT COUNT() FROM Account` and `SELECT COUNT(Industry) FROM Account` in SOQL?',
+        options: [
+            'They are identical and return the same number.',
+            '`COUNT()` returns the total number of rows matching the query. `COUNT(Industry)` returns only the number of rows where the `Industry` field is NOT null.',
+            '`COUNT()` is invalid syntax; only `COUNT(fieldName)` is allowed.',
+            '`COUNT(Industry)` returns the number of unique Industry values.'
+        ],
+        correctAnswer: 1,
+        explanation: '`COUNT()` (no field parameter) returns the total row count regardless of null values. `COUNT(fieldName)` returns only the count of rows where that specific field has a non-null value. To count unique non-null values, use `COUNT_DISTINCT(fieldName)`.'
+    },
+    {
+        id: 828,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'In a `before insert` trigger, a developer wants to prevent a record from being saved and display an error message to the user. Which method should the developer call on the sObject record?',
+        options: [
+            'throw new DmlException(\'Error message\');',
+            'record.addError(\'Error message\');',
+            'ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, \'Error message\'));',
+            'System.debug(LoggingLevel.ERROR, \'Error message\');'
+        ],
+        correctAnswer: 1,
+        explanation: 'In trigger context, calling `record.addError(\'message\')` on an sObject in `Trigger.new` prevents that specific record from being saved and displays the error message to the user. `throw new DmlException()` would abort the entire transaction. `ApexPages.addMessage()` is for Visualforce only.'
+    },
+    {
+        id: 829,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which Apex keyword is used inside a subclass method to call the parent class\'s version of an overridden method?',
+        options: [
+            'this.parentMethod()',
+            'base.method()',
+            'super.method()',
+            'parent.method()'
+        ],
+        correctAnswer: 2,
+        explanation: 'In Apex, the `super` keyword references the parent (base) class. Inside an overriding method, `super.methodName()` calls the parent class\'s original implementation. This is useful when you want to extend the parent\'s behavior rather than completely replacing it.'
+    },
+    {
+        id: 830,
+        domain: 'Process Automation & Apex Logic',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer uses the `switch on` statement with an sObject variable. Which Apex behavior does this enable?\n\nsObject record = getRecord();\nswitch on record {\n    when Account a { ... }\n    when Contact c { ... }\n    when null { ... }\n    when else { ... }\n}',
+        options: [
+            'It converts the sObject to a String before matching.',
+            'It performs polymorphic type-checking, automatically casting the sObject to the matched concrete type (`Account a`, `Contact c`) within each `when` block.',
+            'It throws a compile error because `switch on` does not support sObjects.',
+            'It matches based on the sObject\'s `Id` prefix.'
+        ],
+        correctAnswer: 1,
+        explanation: 'The `switch on` statement in Apex supports sObject type matching. When the runtime sObject type matches a `when` clause (e.g., `when Account a`), Apex automatically casts the generic `sObject` into the specific type (`Account a`), giving you direct access to that object\'s fields without manual casting.'
     }
 ];
 console.log(QUESTION_BANK.length);
