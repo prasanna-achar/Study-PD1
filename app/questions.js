@@ -1552,6 +1552,57 @@ const QUESTION_BANK = [
         ],
         correctAnswer: 2,
         explanation: 'To convert a Lookup to a Master-Detail, all existing records MUST have a value in that lookup field (it cannot be null). Additionally, custom objects are limited to a maximum of 2 Master-Detail relationships.'
+    },
+    // =========================================================================================
+    // BATCH 4: AGENTFORCE & AI DEVELOPER UPDATES
+    // =========================================================================================
+    {
+        id: 601,
+        domain: 'Agentforce & AI',
+        weight: '38%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer wants to expose a custom Apex class as a conversational action for Agentforce (Salesforce\'s AI agent) so that the AI can invoke it to check external inventory. Which annotation must be used on the Apex method?',
+        options: [
+            '@AuraEnabled',
+            '@InvocableMethod',
+            '@Future',
+            '@AgentAction'
+        ],
+        correctAnswer: 1,
+        explanation: 'Agentforce utilizes standard Salesforce Flow and Action concepts under the hood. To expose custom Apex code as an action to an AI Agent, the method must be annotated with `@InvocableMethod` so it can be registered as a Custom Action within the Agent Builder.'
+    },
+    {
+        id: 602,
+        domain: 'Agentforce & AI',
+        weight: '17%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'When developing and testing Agentforce configurations and custom agent actions using Salesforce DX, what is the best practice for moving these configurations between environments?',
+        options: [
+            'They cannot be deployed and must be recreated manually in Production.',
+            'Deploy them using standard Metadata API types like `Bot` and `PromptTemplate`.',
+            'Hardcode the Agent interactions directly within a Lightning Web Component.',
+            'Export the Agentforce configurations as a CSV file using Data Loader.'
+        ],
+        correctAnswer: 1,
+        explanation: 'Agentforce configurations, prompts, and actions are fully metadata-driven. They can be version-controlled and deployed across environments using standard Salesforce DX and Metadata API types like `Bot`, `PromptTemplate`, and `Flow`.'
+    },
+    {
+        id: 603,
+        domain: 'Agentforce & AI',
+        weight: '38%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer needs to programmatically execute a Prompt Builder template from within an Apex class to generate an AI summary of an Account. Which class should the developer use to invoke the generative AI prompt?',
+        options: [
+            'ConnectApi.EinsteinLLM',
+            'System.AI',
+            'Database.executePrompt()',
+            'Agentforce.invoke()'
+        ],
+        correctAnswer: 0,
+        explanation: 'To programmatically invoke Prompt Builder templates or generative AI models from Apex, developers use the `ConnectApi` namespace, specifically methods found within the `ConnectApi.EinsteinLLM` or `ConnectApi.PromptGeneration` classes.'
     }
 ];
 console.log(QUESTION_BANK.length);
