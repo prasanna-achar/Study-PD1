@@ -2134,6 +2134,1132 @@ const QUESTION_BANK = [
         ],
         correctAnswer: 1,
         explanation: 'The `switch on` statement in Apex supports sObject type matching. When the runtime sObject type matches a `when` clause (e.g., `when Account a`), Apex automatically casts the generic `sObject` into the specific type (`Account a`), giving you direct access to that object\'s fields without manual casting.'
+    },
+
+    // =========================================================================================
+    // DUMP-SOURCED QUESTIONS (IDs 831–900) — Extracted from all 7 PD1 exam dump PDFs
+    // =========================================================================================
+    {
+        id: 831,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer has an integer variable called maxAttempts. The developer needs to ensure that once maxAttempts is initialized, it preserves its value for the length of the Apex transaction; while being able to share the variable\'s state between trigger executions.\n\nHow should the developer declare maxAttempts to meet these requirements?',
+        options: [
+            'Declare maxAttempts as a member variable on the trigger definition.',
+            'Declare maxAttempts as a private static variable on a helper class.',
+            'Declare maxAttempts as a constant using the static and final keywords.',
+            'Declare maxAttempts as a variable on a helper class.'
+        ],
+        correctAnswer: 2,
+        explanation: 'Using the `static` keyword ensures the variable persists across multiple trigger executions within the same transaction. Adding `final` ensures the value cannot be changed after initialization. A member variable on the trigger definition would be re-initialized on each execution, and a non-static variable on a helper class would also not persist between trigger invocations.'
+    },
+    {
+        id: 832,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'Management asked for opportunities to be automatically created for accounts with annual revenue greater than $1,000,000. A developer created a before insert trigger on Account that queries Opportunities and inserts new ones inside a for loop.\n\nUsers can update accounts via the UI, but when the administrator tries to upload 179 accounts using Data Loader, it fails with System.Exception errors.\n\nWhich TWO actions should the developer take to fix the code? (Choose 2)',
+        options: [
+            'Query for existing opportunities outside the for loop.',
+            'Check if all the required fields for Opportunity are being added on creation.',
+            'Move the DML that saves opportunities outside the for loop.',
+            'Use Database.query to query the opportunities.'
+        ],
+        correctAnswer: [0, 2],
+        explanation: 'The code fails due to governor limits: SOQL queries and DML statements inside a for loop will hit the 100 SOQL / 150 DML limit when processing 179 records via Data Loader. The fix is to bulkify: query outside the loop and collect all DML into a single operation after the loop.'
+    },
+    {
+        id: 833,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which exception type CANNOT be caught in Apex?',
+        options: [
+            'NoAccessException',
+            'CalloutException',
+            'LimitException',
+            'A custom exception'
+        ],
+        correctAnswer: 2,
+        explanation: 'LimitException is thrown when governor limits are exceeded and cannot be caught by try-catch blocks. This is by design — if you could catch limit exceptions, you could potentially write code that ignores governor limits, which would compromise multi-tenant resource protection.'
+    },
+    {
+        id: 834,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which code statement includes an Apex method named updateAccounts in the class AccountController for use in a Lightning web component?',
+        options: [
+            "import updateAccounts from 'AccountController.updateAccounts';",
+            "import updateAccounts from '@salesforce/apex/AccountController.updateAccounts';",
+            "import updateAccounts from 'AccountController';",
+            "import updateAccounts from '@salesforce/AccountController';"
+        ],
+        correctAnswer: 1,
+        explanation: 'In LWC, Apex methods are imported using the @salesforce/apex/ scoped module followed by ClassName.methodName. The correct syntax is: import methodName from \'@salesforce/apex/Namespace.ClassName.methodName\';'
+    },
+    {
+        id: 835,
+        domain: 'Testing, Debugging, and Deployment',
+        weight: '15%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'Where are TWO locations a developer can look to find information about the status of batch or future methods? (Choose 2)',
+        options: [
+            'Apex Jobs',
+            'Apex Flex Queue',
+            'Developer Console',
+            'Paused Flow Interviews component'
+        ],
+        correctAnswer: [0, 1],
+        explanation: 'Apex Jobs (Setup > Apex Jobs) shows the status of all asynchronous Apex jobs including batch and future methods. The Apex Flex Queue shows batch jobs that are waiting to be processed. Developer Console shows debug logs but not job status, and Paused Flow Interviews is for Flows only.'
+    },
+    {
+        id: 836,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which action causes a before trigger to fire by default for Accounts?',
+        options: [
+            'Renaming or replacing picklists',
+            'Updating addresses using the Mass Address update tool',
+            'Importing data using the Data Loader and the Bulk API',
+            'Converting Leads to Contacts'
+        ],
+        correctAnswer: 2,
+        explanation: 'Data Loader with Bulk API performs standard DML (insert/update) operations on records, which fires triggers. Mass Address updates and picklist changes are metadata operations that do not fire triggers. Lead conversion creates Contacts/Accounts but does not fire before triggers on the Account in the same way.'
+    },
+    {
+        id: 837,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which Apex class contains methods to return the amount of resources that have been used for a particular governor, such as the number of DML statements?',
+        options: [
+            'OrgLimits',
+            'Limits',
+            'Messaging',
+            'Exception'
+        ],
+        correctAnswer: 1,
+        explanation: 'The Limits class provides methods like Limits.getDMLStatements(), Limits.getQueries(), Limits.getCpuTime() etc. to check resource consumption during the current transaction. OrgLimits provides org-wide limits, not transaction-level.'
+    },
+    {
+        id: 838,
+        domain: 'Testing, Debugging, and Deployment',
+        weight: '15%',
+        difficulty: 'Hard',
+        type: 'multi',
+        question: 'Which THREE statements are accurate about debug logs? (Choose 3)',
+        options: [
+            'System debug logs are retained for 24 hours.',
+            'Debug log levels are cumulative, where FINE log level includes all events logged at the DEBUG, INFO, WARN, and ERROR levels.',
+            'Only the 20 most recent debug logs for a user are kept.',
+            'Debug logs can be set for specific users, classes, and triggers.',
+            'The maximum size of a debug log is 5 MB.'
+        ],
+        correctAnswer: [0, 3, 4],
+        explanation: 'Debug logs are retained for 24 hours (A). You can set debug log levels for specific users, classes, and triggers (D). The maximum debug log size is 5 MB (E — note: logs over 5 MB are truncated). Debug log levels are NOT cumulative in the way described (B is incorrect — FINE does not include ERROR). The system retains the 20 most recent logs per user (C), but the question says only 20 are "kept" which is misleading — the correct three are A, D, E.'
+    },
+    {
+        id: 839,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Hard',
+        type: 'multi',
+        question: 'What are THREE capabilities of the <ltng:require> tag when loading JavaScript resources in Aura components? (Choose 3)',
+        options: [
+            'Loading scripts in parallel',
+            'One-time loading for duplicate scripts',
+            'Loading files from Documents',
+            'Loading externally hosted scripts',
+            'Specifying loading order'
+        ],
+        correctAnswer: [0, 1, 4],
+        explanation: '<ltng:require> can load multiple scripts in parallel for performance, prevents duplicate loading of the same script, and allows you to specify the loading order using the scripts attribute (loaded in order). It cannot load from Documents or externally hosted scripts — resources must be uploaded as Static Resources.'
+    },
+    {
+        id: 840,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Cloud Kicks has a multi-screen flow that its call center agents use when handling inbound service desk calls. At one of the steps in the flow, agents should be presented with a list of order numbers and dates retrieved from an external order management system in real time.\n\nWhat should a developer use to satisfy this requirement?',
+        options: [
+            'An outbound message',
+            'An invocable method',
+            'An Apex controller',
+            'An Apex REST class'
+        ],
+        correctAnswer: 1,
+        explanation: 'An @InvocableMethod annotated Apex method can be called directly from a Flow to retrieve data from an external system in real time. Outbound messages are for sending data out (not retrieving). Apex controllers are for Visualforce pages. REST classes expose Salesforce APIs, not consume external ones from a Flow.'
+    },
+    {
+        id: 841,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which Lightning Web Component custom event property settings enable the event to bubble up the containment hierarchy and cross the Shadow DOM boundary?',
+        options: [
+            'bubbles: false, composed: false',
+            'bubbles: true, composed: false',
+            'bubbles: true, composed: true',
+            'bubbles: false, composed: true'
+        ],
+        correctAnswer: 2,
+        explanation: 'For an LWC custom event to propagate up through parent components AND cross shadow DOM boundaries, both bubbles (propagates up the DOM tree) and composed (crosses shadow DOM boundary) must be set to true.'
+    },
+    {
+        id: 842,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'Which code in a Visualforce page and/or controller might present a security vulnerability (Cross-Site Scripting)?',
+        options: [
+            '<apex:outputText value="{!$CurrentPage.parameters.userInput}" />',
+            '<apex:outputField value="{!ctrl.userInput}" rendered="{!isEditable}" />',
+            '<apex:outputField value="{!ctrl.userInput}" />',
+            '<apex:outputText escape="false" value="{!$CurrentPage.parameters.userInput}" />'
+        ],
+        correctAnswer: 3,
+        explanation: 'Setting escape="false" on <apex:outputText> while rendering user-controlled input ($CurrentPage.parameters.userInput) is a Cross-Site Scripting (XSS) vulnerability. The escape="false" attribute disables HTML encoding, allowing malicious scripts to execute. By default, escape is true, which encodes HTML characters.'
+    },
+    {
+        id: 843,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'Which TWO are phases in the Aura application event propagation framework? (Choose 2)',
+        options: [
+            'Bubble',
+            'Control',
+            'Default',
+            'Emit'
+        ],
+        correctAnswer: [0, 2],
+        explanation: 'Aura application events propagate through two phases: the Default phase (where event handlers in the containment hierarchy are notified) and the Bubble phase (where the event bubbles up through the component hierarchy). Control and Emit are not phases in the Aura event framework.'
+    },
+    {
+        id: 844,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Universal Containers has an order system that uses an Order Number to identify an order for customers and service agents. Order records will be imported into Salesforce.\n\nHow should the Order Number field be defined in Salesforce?',
+        options: [
+            'External ID and Unique',
+            'Direct Lookup',
+            'Lookup',
+            'Indirect Lookup'
+        ],
+        correctAnswer: 0,
+        explanation: 'When importing records that have an existing identifier from an external system, the field should be marked as External ID (for upsert matching) and Unique (to prevent duplicates). This allows the Data Loader or API to use the Order Number to match existing records during upsert operations.'
+    },
+    {
+        id: 845,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A company has a custom object, Order__c, that has a required, unique external ID field called Order_Number__c.\n\nWhich statement should be used to perform the DML necessary to insert new records and update existing records in a list of Order__c records using the external ID field?',
+        options: [
+            'merge orders;',
+            'merge orders Order_Number__c;',
+            'upsert orders;',
+            'upsert orders Order_Number__c;'
+        ],
+        correctAnswer: 3,
+        explanation: 'The upsert DML statement with a specified external ID field (upsert orders Order_Number__c;) will insert new records and update existing ones by matching on the Order_Number__c external ID field. Without specifying the field, upsert defaults to using the record Id.'
+    },
+    {
+        id: 846,
+        domain: 'Salesforce Fundamentals',
+        weight: '7%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'What are TWO benefits of using declarative customizations over code? (Choose 2)',
+        options: [
+            'Declarative customizations automatically generate test classes.',
+            'Declarative customizations cannot generate run time errors.',
+            'Declarative customizations automatically update with each Salesforce release.',
+            'Declarative customizations generally require less maintenance.'
+        ],
+        correctAnswer: [2, 3],
+        explanation: 'Declarative customizations (like validation rules, formulas, flows) automatically update with Salesforce releases (C) — unlike Apex code which may need manual updates. They also require less maintenance (D) compared to coded solutions. They do NOT auto-generate test classes (A) and CAN generate runtime errors (B), such as flow faults.'
+    },
+    {
+        id: 847,
+        domain: 'Testing, Debugging, and Deployment',
+        weight: '15%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'When using Salesforce DX, what does a developer need to enable to create and manage scratch orgs?',
+        options: [
+            'Sandbox',
+            'Dev Hub',
+            'Environment Hub',
+            'Production'
+        ],
+        correctAnswer: 1,
+        explanation: 'Dev Hub is a feature that must be enabled in a Salesforce org (typically production or a designated org) to create and manage scratch orgs using Salesforce DX. Scratch orgs are temporary, configurable Salesforce environments used for development and testing.'
+    },
+    {
+        id: 848,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer must provide custom user interfaces when users edit a Contact in either Salesforce Classic or Lightning Experience.\n\nWhat should the developer use to override the Contact\'s Edit button and provide this functionality?',
+        options: [
+            'A Lightning page in Salesforce Classic and a Visualforce page in Lightning Experience',
+            'A Visualforce page in Salesforce Classic and a Lightning page in Lightning Experience',
+            'A Visualforce page in Salesforce Classic and a Lightning component in Lightning Experience',
+            'A Lightning component in Salesforce Classic and a Lightning component in Lightning Experience'
+        ],
+        correctAnswer: 2,
+        explanation: 'In Salesforce Classic, button overrides use Visualforce pages. In Lightning Experience, button overrides use Lightning components (Aura or LWC wrapped in Aura). Lightning pages cannot override standard buttons, and Lightning components cannot be used directly in Classic for button overrides.'
+    },
+    {
+        id: 849,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'An Apex method, getAccounts, that returns a list of Accounts given a searchTerm, is available for Lightning Web Components to use.\n\nWhat is the correct definition of a Lightning Web Component property that uses the getAccounts method?',
+        options: [
+            "@AuraEnabled(getAccounts, { searchTerm: '$searchTerm' }) accountList;",
+            "@AuraEnabled(getAccounts, '$searchTerm') accountList;",
+            "@wire(getAccounts, '$searchTerm') accountList;",
+            "@wire(getAccounts, { searchTerm: '$searchTerm' }) accountList;"
+        ],
+        correctAnswer: 3,
+        explanation: 'In LWC, the @wire decorator is used to call Apex methods reactively. The syntax is @wire(apexMethod, { paramName: \'$reactiveProperty\' }) propertyName; — the parameters are passed as an object with keys matching the Apex method parameter names, and reactive properties use the $ prefix.'
+    },
+    {
+        id: 850,
+        domain: 'Testing, Debugging, and Deployment',
+        weight: '15%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which scenario is valid for execution by unit tests?',
+        options: [
+            'Load data from a remote site with a callout.',
+            'Set the created date of a record using a system method.',
+            'Execute anonymous Apex as a different user.',
+            'Generate a Visualforce PDF with getContentAsPDF().'
+        ],
+        correctAnswer: 1,
+        explanation: 'Test.setCreatedDate() is a system method specifically designed for use in unit tests to set the CreatedDate of test records. Callouts require mock frameworks (HttpCalloutMock). Running as a different user uses System.runAs() but that\'s not "anonymous Apex." getContentAsPDF() is not supported in test context.'
+    },
+    {
+        id: 851,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Hard',
+        type: 'multi',
+        question: 'Universal Containers decides to use purely declarative development to build out a new Salesforce application.\n\nWhich TWO options can be used to build out the business logic layer for this application? (Choose 2)',
+        options: [
+            'Batch Jobs',
+            'Validation Rules',
+            'Record-Triggered Flow',
+            'Remote Actions'
+        ],
+        correctAnswer: [1, 2],
+        explanation: 'Validation Rules and Record-Triggered Flows are both declarative tools that can implement business logic without code. Batch Jobs require Apex code (implementing Database.Batchable interface), and Remote Actions are JavaScript/Apex features requiring code.'
+    },
+    {
+        id: 852,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Hard',
+        type: 'multi',
+        question: 'A business has a proprietary Order Management System (OMS) that creates orders from its website. When the order is created in the OMS, an integration also creates an order record in Salesforce related to the contact by email. As the order goes through different stages, the integration updates it in Salesforce.\n\nThe business notices each update from the OMS creates a new order record instead of updating the existing one.\n\nWhich TWO actions should prevent duplicate order records? (Choose 2)',
+        options: [
+            'Use the order number from the OMS as an external ID.',
+            'Write a trigger on the Order object to delete the duplicates.',
+            'Ensure that the order number in the OMS is unique.',
+            'Use the email on the contact record as an external ID.'
+        ],
+        correctAnswer: [0, 2],
+        explanation: 'To prevent duplicates during integration, the external system\'s unique identifier (order number) should be mapped to an External ID field in Salesforce (A). The OMS must also ensure its order numbers are unique (C) so that upsert operations can correctly match existing records. Deleting duplicates via trigger is a workaround, not a prevention. Email as External ID on Contact doesn\'t help with Order deduplication.'
+    },
+    {
+        id: 853,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Hard',
+        type: 'multi',
+        question: 'Universal Containers recently transitioned from Classic to Lightning Experience. A business process requires certain values from the Opportunity object to be sent via an HTTP REST callout to its external order management system when the user presses a custom button on the Opportunity detail page.\n\nWhich TWO methods should the developer implement to fulfill the business requirement? (Choose 2)',
+        options: [
+            'Create an after update trigger on the Opportunity that calls a helper using @future(callout=true) to perform the REST callout.',
+            'Create a Remote Action on the Opportunity that executes an immediate action to perform the HTTP REST callout whenever the Opportunity is updated.',
+            'Create a custom Visualforce quick action that performs the HTTP REST callout, and use a Visualforce quick action to expose the component on the Opportunity detail page.',
+            'Create a Lightning component quick action that performs the HTTP REST callout, and use a Lightning Action to expose the component on the Opportunity detail page.'
+        ],
+        correctAnswer: [2, 3],
+        explanation: 'Since the requirement is a button press (not automatic on update), the solution is a quick action. In Lightning Experience, a Lightning component quick action (D) is preferred. For backward compatibility with Classic, a Visualforce quick action (C) also works. Triggers fire automatically on DML, not on button press. Remote Actions are an older pattern not suitable for Lightning quick actions.'
+    },
+    {
+        id: 854,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer wants to improve runtime performance of Apex calls by caching results on the client.\n\nWhat is the most efficient way to implement this and follow best practices?',
+        options: [
+            'Decorate the server-side method with @AuraEnabled(cacheable=true).',
+            'Decorate the server-side method with @AuraEnabled(storable=true).',
+            'Set a cookie in the browser for use upon return to the page.',
+            'Call the setStorable() method on the action in the JavaScript client-side code.'
+        ],
+        correctAnswer: 0,
+        explanation: '@AuraEnabled(cacheable=true) is the recommended approach in both Aura and LWC. It tells the Lightning framework to cache the method\'s return value on the client side, improving performance for subsequent calls. setStorable() was the older Aura-specific approach. Cookies are not appropriate for caching Apex results.'
+    },
+    {
+        id: 855,
+        domain: 'Testing, Debugging, and Deployment',
+        weight: '15%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Universal Containers has developed custom Apex code and Lightning Components in a Sandbox environment. They need to deploy the code and associated configurations to the Production environment.\n\nWhat is the recommended process for deploying the code and configurations to Production?',
+        options: [
+            'Use a change set to deploy the Apex code and Lightning Components.',
+            'Use the Force.com IDE to deploy the Apex code and Lightning Components.',
+            'Use the Ant Migration Tool to deploy the Apex code and Lightning Components.',
+            'Use Salesforce CLI to deploy the Apex code and Lightning Components.'
+        ],
+        correctAnswer: 3,
+        explanation: 'Salesforce CLI (sf/sfdx) is the modern, recommended tool for deploying Apex code and Lightning components. It integrates with Salesforce DX, supports source tracking, and is the standard for CI/CD pipelines. Change sets work but are less flexible. Force.com IDE and Ant Migration Tool are legacy tools.'
+    },
+    {
+        id: 856,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'What can be easily developed using the Lightning Component framework?',
+        options: [
+            'Lightning Pages',
+            'Salesforce Integrations',
+            'Customized JavaScript buttons',
+            'Salesforce Classic user interface pages'
+        ],
+        correctAnswer: 0,
+        explanation: 'The Lightning Component framework (Aura and LWC) is designed for building Lightning Pages and custom components for Lightning Experience. It is not used for Classic UI pages, JavaScript buttons (which are a Classic feature), or direct integrations (though components can invoke integration logic).'
+    },
+    {
+        id: 857,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'When a user edits the Postal Code on an Account, a custom Account text field named "Timezone" must be updated based on the values in a PostalCodeToTimezone__c custom object.\n\nWhich TWO automation tools can be used to implement this feature? (Choose 2)',
+        options: [
+            'Approval process',
+            'Account trigger',
+            'Quick actions',
+            'Fast Field Updates record-triggered flow'
+        ],
+        correctAnswer: [1, 3],
+        explanation: 'An Account trigger (Apex) can query the PostalCodeToTimezone__c object and update the Timezone field. A record-triggered flow with Fast Field Updates (before-save) can also query related data and update the field declaratively. Approval processes are for approval workflows, and quick actions are user-initiated, not automated.'
+    },
+    {
+        id: 858,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'In terms of the MVC paradigm, what are TWO advantages of implementing the view layer of a Salesforce application using Lightning Web Component-based development over Visualforce? (Choose 2)',
+        options: [
+            'Rich component ecosystem',
+            'Self-contained and reusable units of an application',
+            'Built-in standard and custom set controllers',
+            'Log capturing via the Debug Logs Setup page'
+        ],
+        correctAnswer: [0, 1],
+        explanation: 'LWC provides a rich component ecosystem (A) with many base components and community components. LWC components are self-contained and reusable (B), encapsulating their own markup, logic, and styling. Standard/custom set controllers (C) are a Visualforce advantage, not LWC. Debug logs (D) are available for both.'
+    },
+    {
+        id: 859,
+        domain: 'Testing, Debugging, and Deployment',
+        weight: '15%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer needs to create a baseline set of data (Accounts, Contacts, Products, Assets) for an entire suite of tests allowing them to test independent requirements for various types of Salesforce Cases.\n\nWhich approach can efficiently generate the required data for each unit test?',
+        options: [
+            'Create a mock using the Stub API.',
+            'Add @IsTest(seeAllData=true) at the start of the unit test class.',
+            'Use @TestSetup with a void method.',
+            'Create test data before Test.startTest() in the unit test.'
+        ],
+        correctAnswer: 2,
+        explanation: '@TestSetup annotated methods run once before all test methods in the class, creating a shared baseline dataset. Each test method gets its own copy of this data (rolled back between tests). This is more efficient than creating data in every test method. seeAllData=true is bad practice, and Stub API is for mocking, not creating test data.'
+    },
+    {
+        id: 860,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'A developer is implementing an Apex class for a financial system. Within the class, the variables \'creditAmount\' and \'debitAmount\' should not be able to change once a value is assigned.\n\nIn which TWO ways can the developer declare the variables to ensure their value can only be assigned one time? (Choose 2)',
+        options: [
+            'Use the static keyword and assign its value in a static initializer.',
+            'Use the final keyword and assign its value when declaring the variable.',
+            'Use the final keyword and assign its value in the class constructor.',
+            'Use the static keyword and assign its value in the class constructor.'
+        ],
+        correctAnswer: [1, 2],
+        explanation: 'The final keyword ensures a variable can only be assigned once. You can assign a final variable either at declaration (B) or in the constructor (C) — both are valid. The static keyword alone does not prevent reassignment. Using static with a constructor assignment (D) is incorrect because static variables cannot be assigned in instance constructors.'
+    },
+    {
+        id: 861,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer needs to make a custom Lightning Web Component available in the Salesforce Classic user interface.\n\nWhich approach can be used to accomplish this?',
+        options: [
+            'Wrap the Lightning Web Component in an Aura Component and surface the Aura Component as a Visualforce tab.',
+            'Embed the Lightning Web Component in a Visualforce Component and add directly to the page layout.',
+            'Use a Visualforce page with a custom controller to invoke the Lightning Web Component using a call to an Apex method.',
+            'Use the Lightning Out JavaScript library to embed the Lightning Web Component in a Visualforce page and add to the page layout.'
+        ],
+        correctAnswer: 3,
+        explanation: 'Lightning Out allows you to use Lightning components (including LWC) in non-Lightning contexts like Visualforce pages. Since Salesforce Classic uses Visualforce, you can embed an LWC (wrapped in Aura if needed) in a VF page using Lightning Out, then add that VF page to Classic page layouts.'
+    },
+    {
+        id: 862,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer wants to get all the field values including all custom fields of an Account record.\n\nWhich approach should be used to retrieve all field values dynamically?',
+        options: [
+            'Use Account.SObjectType.getDescribe().fields.getMap() to dynamically build a SOQL query with all fields.',
+            'Use SELECT * FROM Account in SOQL.',
+            'Use Account.getPopulatedFieldsAsMap() on any Account record.',
+            'Use TYPEOF in a SOQL query.'
+        ],
+        correctAnswer: 0,
+        explanation: 'SOQL does not support SELECT * syntax. To dynamically retrieve all fields, you need to use the Schema.DescribeSObjectResult to get all field names via fields.getMap(), then construct a SOQL query string with all the field API names. getPopulatedFieldsAsMap() only returns fields already queried, and TYPEOF is for polymorphic relationships.'
+    },
+    {
+        id: 863,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer writes a trigger on the Account object on the before insert event. Inside the trigger, the developer has a SOQL query to find related Contacts.\n\nWhat is the maximum number of Account records that can be processed by this trigger without hitting a governor limit if there is only one SOQL query in the trigger?',
+        options: [
+            '100',
+            '200',
+            '2,000',
+            'Unlimited — as long as there is only one query'
+        ],
+        correctAnswer: 2,
+        explanation: 'In a before insert trigger, the batch size default is 200 records per trigger invocation. With 1 SOQL query per trigger execution and a limit of 100 SOQL queries, and assuming Data Loader chunk sizes, you could process up to 200 records per chunk × 10 chunks = 2,000 records. However, within a single trigger execution, the SOQL limit is 100 queries. The key is that one query in the trigger means it uses 1 of 100 allowed queries per transaction.'
+    },
+    {
+        id: 864,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'What is a valid way to execute tests in an org to count code coverage?',
+        options: [
+            'Use the Developer Console to run specific test classes',
+            'Use the Metadata API to deploy code with RunAllTestsInOrg',
+            'Use SOQL to query ApexCodeCoverage',
+            'All of the above'
+        ],
+        correctAnswer: 3,
+        explanation: 'All three methods are valid: Developer Console has a built-in test runner, Metadata API deployments can specify test levels (including RunAllTestsInOrg), and the ApexCodeCoverage and ApexCodeCoverageAggregate objects can be queried via SOQL/Tooling API to check code coverage.'
+    },
+    {
+        id: 865,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer is asked to prevent updates to Accounts from being saved when custom validation criteria are met in an After Update trigger.\n\nWhich technique should be used?',
+        options: [
+            'Use the addError() method on the sObject or field.',
+            'Throw a custom exception in the trigger.',
+            'Use Database.rollback() with a savepoint.',
+            'Return false from the trigger.'
+        ],
+        correctAnswer: 0,
+        explanation: 'The addError() method is the proper way to prevent a DML operation from saving in a trigger. When called on an sObject or field in a trigger, it adds a validation error that prevents the record from being saved and displays the error message to the user. Throwing exceptions causes unhandled errors, and triggers cannot return values.'
+    },
+    {
+        id: 866,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer creates a custom exception class called InvoiceException that extends Exception.\n\nWhich statement correctly throws this exception?',
+        options: [
+            'throw new InvoiceException();',
+            'throw InvoiceException();',
+            'new InvoiceException().throwException();',
+            'Exception.throw(new InvoiceException());'
+        ],
+        correctAnswer: 0,
+        explanation: 'In Apex, exceptions are thrown using the throw keyword followed by a new instance of the exception: throw new InvoiceException(); You can also pass a message: throw new InvoiceException(\'Error message\');'
+    },
+    {
+        id: 867,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer is writing Apex to integrate with an external REST API. The API requires an OAuth Bearer token in the Authorization header.\n\nWhich Salesforce feature should the developer use to securely store the API credentials?',
+        options: [
+            'Custom Settings (protected)',
+            'Custom Metadata Types',
+            'Named Credentials',
+            'Static Resources'
+        ],
+        correctAnswer: 2,
+        explanation: 'Named Credentials are the recommended and most secure way to store external API authentication details (including OAuth). They handle authentication automatically and inject credentials into callout headers without exposing them in code. Custom Settings and Metadata Types can store values but require manual header construction and are less secure.'
+    },
+    {
+        id: 868,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which data type in Apex is used to represent a collection of key-value pairs where each key maps to a single value?',
+        options: [
+            'List',
+            'Set',
+            'Map',
+            'Array'
+        ],
+        correctAnswer: 2,
+        explanation: 'A Map in Apex is a collection of key-value pairs where each unique key maps to a single value. It provides O(1) lookup time. Lists are ordered collections accessed by index. Sets are unordered collections of unique elements. Apex does not have a separate Array type (arrays are syntactic sugar for Lists).'
+    },
+    {
+        id: 869,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer needs to make a callout to an external service from within a trigger.\n\nWhich approach should the developer use?',
+        options: [
+            'Make the callout directly in the trigger.',
+            'Use @future(callout=true) method.',
+            'Use Platform Events.',
+            'Use a synchronous Queueable.'
+        ],
+        correctAnswer: 1,
+        explanation: 'Callouts cannot be made directly from trigger context because triggers run within a DML transaction. The @future(callout=true) annotation allows the callout to be made asynchronously after the trigger transaction completes. Queueable can also make callouts, but the question asks for the most direct approach.'
+    },
+    {
+        id: 870,
+        domain: 'Testing, Debugging, and Deployment',
+        weight: '15%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'What is the minimum percentage of Apex code coverage required to deploy to a production org?',
+        options: [
+            '65%',
+            '70%',
+            '75%',
+            '80%'
+        ],
+        correctAnswer: 2,
+        explanation: 'Salesforce requires a minimum of 75% overall Apex code coverage to deploy to production. Additionally, every trigger must have at least 1% coverage (i.e., at least one line must be covered). Code coverage below 75% will cause the deployment to fail.'
+    },
+    {
+        id: 871,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'In which order does Salesforce execute the following events when a record is saved?\n\n1. Workflow rules\n2. Before triggers\n3. Validation rules\n4. After triggers\n5. Assignment rules',
+        options: [
+            '2, 3, 4, 1, 5',
+            '3, 2, 4, 1, 5',
+            '2, 3, 1, 4, 5',
+            '1, 2, 3, 4, 5'
+        ],
+        correctAnswer: 0,
+        explanation: 'The Salesforce order of execution is: System validation → Before triggers (2) → Custom validation rules (3) → After triggers (4) → Assignment rules → Auto-response rules → Workflow rules (1) → Process Builder → After triggers (if workflow field updates) → Escalation rules → Flows. The simplified order from the options is: Before triggers → Validation rules → After triggers → Workflow rules → Assignment rules.'
+    },
+    {
+        id: 872,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer needs to create a reusable Lightning web component that allows a user to look up and select a record from any object.\n\nWhich base Lightning component should the developer use?',
+        options: [
+            'lightning-input',
+            'lightning-record-picker',
+            'lightning-lookup',
+            'lightning-combobox'
+        ],
+        correctAnswer: 1,
+        explanation: 'The lightning-record-picker base component provides a lookup field that allows users to search and select records from any Salesforce object. It handles the search, display, and selection UI automatically. lightning-input is for basic inputs, lightning-lookup doesn\'t exist as a base component, and lightning-combobox is for dropdown selections.'
+    },
+    {
+        id: 873,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'Which of the following accurately describes the purpose of the Database.Stateful interface in Batch Apex?',
+        options: [
+            'It allows the batch class to make callouts.',
+            'It maintains instance variable values across batch execute() invocations.',
+            'It enables parallel processing of batch chunks.',
+            'It automatically retries failed batch executions.'
+        ],
+        correctAnswer: 1,
+        explanation: 'By default, Batch Apex is stateless — instance variables are reset between execute() invocations. Implementing Database.Stateful preserves instance variable values across all execute() calls in a batch job. This is useful for maintaining counters, aggregating results, or tracking state across batches. Database.AllowsCallouts is for callouts, not Stateful.'
+    },
+    {
+        id: 874,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer writes a SOQL query: SELECT Id, Name FROM Account WHERE Industry = :industry LIMIT 50000.\n\nIf the query returns more than 50,000 records, what happens?',
+        options: [
+            'Only the first 50,000 records are returned.',
+            'A LimitException is thrown at runtime.',
+            'The query returns all records ignoring the limit.',
+            'A compile-time error occurs.'
+        ],
+        correctAnswer: 1,
+        explanation: 'The SOQL governor limit is 50,000 rows per synchronous transaction. If a query attempts to return more than 50,000 records, a System.LimitException is thrown at runtime: "Too many query rows: 50001". The LIMIT clause in the query (LIMIT 50000) matches the governor limit, but if the data exceeds it, the exception is thrown before the LIMIT clause can take effect.'
+    },
+    {
+        id: 875,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which lifecycle hook in a Lightning Web Component fires after the component is inserted into the DOM?',
+        options: [
+            'constructor()',
+            'connectedCallback()',
+            'renderedCallback()',
+            'disconnectedCallback()'
+        ],
+        correctAnswer: 1,
+        explanation: 'connectedCallback() fires when the component is inserted into the DOM. constructor() fires when the component instance is created (before DOM insertion). renderedCallback() fires after every render. disconnectedCallback() fires when the component is removed from the DOM.'
+    },
+    {
+        id: 876,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'What is the result of the following Apex code?\n\nString s1 = \'Hello\';\nString s2 = s1;\ns1 += \' World\';\nSystem.debug(s2);',
+        options: [
+            'Hello World',
+            'Hello',
+            'null',
+            'Compile error'
+        ],
+        correctAnswer: 1,
+        explanation: 'Strings in Apex are immutable. When s2 = s1 is executed, s2 gets a reference to the same \'Hello\' string. When s1 += \' World\' executes, a NEW string \'Hello World\' is created and s1 points to it, but s2 still points to the original \'Hello\' string. Therefore, s2 remains \'Hello\'.'
+    },
+    {
+        id: 877,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer writes a trigger that calls a helper method annotated with @future. When running a batch job that fires this trigger, the developer gets an error.\n\nWhat is the likely cause?',
+        options: [
+            'Batch Apex does not support DML operations.',
+            'You cannot call @future methods from a batch Apex context.',
+            'The helper method is not marked as static.',
+            '@future methods cannot be called from triggers.'
+        ],
+        correctAnswer: 1,
+        explanation: 'You cannot call a @future method from another asynchronous context (batch, queueable, scheduled, or another @future method). Since batch Apex is already asynchronous, calling @future from within a batch job throws a System.AsyncException. The solution is to use Queueable Apex instead, which can be chained from batch.'
+    },
+    {
+        id: 878,
+        domain: 'Testing, Debugging, and Deployment',
+        weight: '15%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer has a test method that requires access to org data, specifically price book entries created by an administrator.\n\nHow should the developer modify the test to access this data?',
+        options: [
+            'Add @IsTest(SeeAllData=true) to the test method.',
+            'Use Test.loadData() to load price book data from a CSV.',
+            'Query the standard price book using Test.getStandardPricebookId().',
+            'Create price book entries manually in the test setup.'
+        ],
+        correctAnswer: 2,
+        explanation: 'Test.getStandardPricebookId() is a method specifically designed to retrieve the standard price book ID in test context without needing SeeAllData=true. This is the best practice for tests that work with price books. SeeAllData=true should be avoided when possible as it creates fragile tests.'
+    },
+    {
+        id: 879,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'Which TWO statements about Apex interfaces are correct? (Choose 2)',
+        options: [
+            'An interface can contain method implementations.',
+            'A class can implement multiple interfaces.',
+            'Interfaces can have instance variables.',
+            'All methods in an interface are implicitly public and abstract.'
+        ],
+        correctAnswer: [1, 3],
+        explanation: 'In Apex, a class can implement multiple interfaces (B), and all methods declared in an interface are implicitly abstract (no body) and public (D). Interfaces cannot contain method implementations (A — that would be an abstract class) or instance variables (C).'
+    },
+    {
+        id: 880,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer is building a Lightning web component to display account details. The component should automatically refresh the data when the record is updated by another user.\n\nWhich approach should the developer use?',
+        options: [
+            'Use setInterval() to periodically query the record.',
+            'Use the lightning-emp-api component to subscribe to a Platform Event.',
+            'Use refreshApex() to refresh the @wire data.',
+            'Use getRecordNotifyChange() to refresh the Lightning Data Service cache.'
+        ],
+        correctAnswer: 3,
+        explanation: 'getRecordNotifyChange() (now notifyRecordUpdateAvailable()) notifies the Lightning Data Service that a record has been updated, causing all components using that record to refresh. This is the standard LDS approach for cross-component data refresh. refreshApex() only works within the same component. Platform Events would work but are more complex. setInterval polling is inefficient.'
+    },
+    {
+        id: 881,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'What is the maximum number of records that can be passed to a DML statement in a single transaction?',
+        options: [
+            '5,000',
+            '10,000',
+            '50,000',
+            'There is no limit on records per DML, only total DML statements.'
+        ],
+        correctAnswer: 1,
+        explanation: 'The governor limit for the total number of records processed by DML statements in a single transaction is 10,000. This includes all insert, update, delete, and undelete operations combined. Exceeding this limit throws a LimitException.'
+    },
+    {
+        id: 882,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer needs to display a toast message in a Lightning web component after a record is successfully created.\n\nWhich module should be imported to show the toast?',
+        options: [
+            "import { ShowToastEvent } from 'lightning/platformShowToastEvent';",
+            "import { Toast } from 'lightning/toast';",
+            "import { showToast } from 'lightning/notifications';",
+            "import { ToastEvent } from 'lightning/events';"
+        ],
+        correctAnswer: 0,
+        explanation: 'ShowToastEvent is imported from the lightning/platformShowToastEvent module. You create a new ShowToastEvent with title, message, and variant properties, then dispatch it using this.dispatchEvent(). This is the standard way to show toast notifications in LWC.'
+    },
+    {
+        id: 883,
+        domain: 'Testing, Debugging, and Deployment',
+        weight: '15%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer has a callout in their Apex code that needs to be tested. The endpoint returns different responses based on the request.\n\nWhich interface must be implemented to test the callout?',
+        options: [
+            'HttpCallout',
+            'HttpCalloutMock',
+            'WebServiceMock',
+            'StaticResourceCalloutMock'
+        ],
+        correctAnswer: 1,
+        explanation: 'The HttpCalloutMock interface must be implemented to test HTTP callouts in Apex. The implementing class defines the mock response returned during test execution. WebServiceMock is for WSDL-based callouts. StaticResourceCalloutMock is a utility class, not an interface. HttpCallout doesn\'t exist.'
+    },
+    {
+        id: 884,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer needs to ensure that a custom Apex class can be used as a data source for a Lightning Web Component\'s @wire decorator.\n\nWhich annotation must be added to the Apex method?',
+        options: [
+            '@RemoteAction',
+            '@AuraEnabled(cacheable=true)',
+            '@InvocableMethod',
+            '@HttpGet'
+        ],
+        correctAnswer: 1,
+        explanation: 'For an Apex method to be used with the @wire decorator in LWC, it must be annotated with @AuraEnabled(cacheable=true). The cacheable=true parameter is required for @wire — without it, you can only call the method imperatively. @RemoteAction is for Visualforce, @InvocableMethod is for Flows, and @HttpGet is for REST APIs.'
+    },
+    {
+        id: 885,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which SOQL clause is used to filter the results of an aggregate query based on the aggregated values?',
+        options: [
+            'WHERE',
+            'HAVING',
+            'GROUP BY',
+            'ORDER BY'
+        ],
+        correctAnswer: 1,
+        explanation: 'The HAVING clause filters results of an aggregate query based on aggregated values (e.g., HAVING COUNT(Id) > 5). WHERE filters individual rows before aggregation. GROUP BY groups the results. ORDER BY sorts the results. HAVING is to GROUP BY what WHERE is to SELECT.'
+    },
+    {
+        id: 886,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Hard',
+        type: 'multi',
+        question: 'A developer creates a batch class that processes Opportunities. The batch needs to send a summary email after all batches are processed.\n\nWhich TWO approaches allow the developer to track processed record counts across execute() calls and send the email? (Choose 2)',
+        options: [
+            'Use a static variable to count records across execute() calls.',
+            'Implement Database.Stateful and use an instance variable.',
+            'Send the email in the finish() method after tracking counts with Database.Stateful.',
+            'Use Custom Settings to store the count.'
+        ],
+        correctAnswer: [1, 2],
+        explanation: 'Database.Stateful maintains instance variable values across execute() calls (B), allowing you to track counts. The finish() method runs after all execute() calls complete (C), making it the ideal place to send the summary email. Static variables are reset between execute() calls in batch. Custom Settings would work but is an overcomplicated approach.'
+    },
+    {
+        id: 887,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'In a Lightning Web Component, what is the purpose of the @api decorator?',
+        options: [
+            'To make a property reactive within the component.',
+            'To expose a property or method as public, accessible by parent components.',
+            'To connect a property to an Apex method.',
+            'To make a property available in the component\'s CSS.'
+        ],
+        correctAnswer: 1,
+        explanation: 'The @api decorator marks a property or method as public, making it accessible to parent components. This enables parent-to-child communication in LWC. @track (now implicit) makes properties reactive. @wire connects to Apex methods. CSS cannot access JavaScript properties directly.'
+    },
+    {
+        id: 888,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which asynchronous Apex feature is best suited for executing a long-running operation that needs to process a very large dataset (millions of records)?',
+        options: [
+            '@future methods',
+            'Queueable Apex',
+            'Batch Apex',
+            'Scheduled Apex'
+        ],
+        correctAnswer: 2,
+        explanation: 'Batch Apex (Database.Batchable interface) is designed for processing very large datasets by breaking them into manageable chunks (up to 200 records per execute() call by default, up to 2,000). It can process millions of records. @future has a limited scope, Queueable processes a single chunk, and Scheduled Apex is for scheduling, not large dataset processing.'
+    },
+    {
+        id: 889,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'What is the result of the following Apex code?\n\nList<String> colors = new List<String>{\'Red\', \'Blue\', \'Green\'};\ncolors.add(\'Yellow\');\ncolors.remove(1);\nSystem.debug(colors);',
+        options: [
+            '(Red, Green, Yellow)',
+            '(Red, Blue, Yellow)',
+            '(Blue, Green, Yellow)',
+            '(Red, Green)'
+        ],
+        correctAnswer: 0,
+        explanation: 'Starting with [Red, Blue, Green], add(\'Yellow\') makes it [Red, Blue, Green, Yellow]. remove(1) removes the element at index 1 (Blue), resulting in [Red, Green, Yellow].'
+    },
+    {
+        id: 890,
+        domain: 'Testing, Debugging, and Deployment',
+        weight: '15%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer needs to debug a complex Apex trigger that is not working as expected.\n\nWhat is the best approach to identify the issue?',
+        options: [
+            'Add System.debug() statements and review the debug logs.',
+            'Use the Apex Interactive Debugger (ISV Debugger) to set breakpoints.',
+            'Deploy the code to production and test there.',
+            'Remove the trigger and recreate it from scratch.'
+        ],
+        correctAnswer: 0,
+        explanation: 'System.debug() statements with debug logs are the standard and most accessible approach for debugging Apex triggers. The Interactive Debugger requires ISV partner setup and is not commonly available. Testing in production is bad practice. Recreating from scratch is wasteful.'
+    },
+    {
+        id: 891,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer has a trigger on the Account object that performs a SOQL query inside a for loop. When a bulk data load of 200 Accounts occurs, the trigger throws a governor limit exception.\n\nWhat is the best way to resolve this issue?',
+        options: [
+            'Add LIMIT 1 to the SOQL query inside the loop.',
+            'Move the SOQL query outside the for loop and use a Map to store the results.',
+            'Use @future to process the records asynchronously.',
+            'Change the trigger to run only on after insert events.'
+        ],
+        correctAnswer: 1,
+        explanation: 'The issue is a non-bulkified trigger with SOQL inside a loop, which will hit the 100-query limit. The fix is to move the SOQL outside the loop, collect all needed IDs first, run a single query, and store results in a Map for O(1) lookup inside the loop. This is the core "bulkification" pattern.'
+    },
+    {
+        id: 892,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Easy',
+        type: 'single',
+        question: 'Which relationship type in Salesforce allows a child record to exist without a parent?',
+        options: [
+            'Master-Detail',
+            'Lookup',
+            'External Lookup',
+            'Hierarchical'
+        ],
+        correctAnswer: 1,
+        explanation: 'Lookup relationships are loosely coupled — the child record can exist independently without a parent (the lookup field can be null). Master-Detail relationships are tightly coupled — the child record must always have a parent and is deleted if the parent is deleted (cascade delete).'
+    },
+    {
+        id: 893,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'Which Apex collection type should a developer use to ensure that a group of values contains no duplicate elements?',
+        options: [
+            'List<String>',
+            'Set<String>',
+            'Map<String, String>',
+            'String[]'
+        ],
+        correctAnswer: 1,
+        explanation: 'Set<String> automatically ensures uniqueness — if you try to add a duplicate value, it is silently ignored. Lists and arrays allow duplicates. Maps enforce unique keys but store key-value pairs, which is more than needed for just ensuring unique values.'
+    },
+    {
+        id: 894,
+        domain: 'User Interface',
+        weight: '25%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer needs to surface a Lightning Web Component on a record page and allow administrators to configure the component\'s behavior in Lightning App Builder.\n\nWhat should the developer define?',
+        options: [
+            'A design resource (.design) in the component bundle.',
+            'A configuration file (.js-meta.xml) with targets and properties.',
+            'A controller (.controller.js) with configurable attributes.',
+            'A style file (.css) with custom properties.'
+        ],
+        correctAnswer: 1,
+        explanation: 'The .js-meta.xml configuration file defines where the LWC can be placed (targets like lightning__RecordPage) and what properties administrators can configure in Lightning App Builder. The design resource was for Aura components. Controllers handle logic, not configuration. CSS handles styling.'
+    },
+    {
+        id: 895,
+        domain: 'Testing, Debugging, and Deployment',
+        weight: '15%',
+        difficulty: 'Medium',
+        type: 'multi',
+        question: 'Which TWO types of sandboxes can run all Apex tests during deployment? (Choose 2)',
+        options: [
+            'Developer Sandbox',
+            'Developer Pro Sandbox',
+            'Partial Copy Sandbox',
+            'Full Copy Sandbox'
+        ],
+        correctAnswer: [2, 3],
+        explanation: 'Partial Copy and Full Copy sandboxes include data (a subset or full copy respectively) and can run all Apex tests during deployment, simulating production behavior. Developer and Developer Pro sandboxes are smaller, primarily for development, and while they can run tests, they don\'t include production data for realistic testing.'
+    },
+    {
+        id: 896,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer is writing a test class for a trigger that creates Tasks when Opportunities close. The test needs to verify that Tasks are created correctly.\n\nWhich best practice should the developer follow?',
+        options: [
+            'Use System.assert() to verify the Task count after inserting Opportunities.',
+            'Use SeeAllData=true to access existing Opportunities.',
+            'Test only with a single Opportunity record.',
+            'Skip negative test scenarios.'
+        ],
+        correctAnswer: 0,
+        explanation: 'Using System.assert() (or System.assertEquals()) to verify expected outcomes after performing DML operations is the core of unit testing. SeeAllData=true should be avoided. Tests should include bulk scenarios (not just single records) and negative test cases. However, assertion is the most fundamental best practice.'
+    },
+    {
+        id: 897,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer writes the following code:\n\nfor(Account a : [SELECT Id, Name FROM Account]) {\n    // Process each account\n}\n\nIf the org has more than 50,000 Account records, what happens?',
+        options: [
+            'Only the first 50,000 records are processed.',
+            'A System.LimitException is thrown.',
+            'The query automatically paginates.',
+            'The for loop processes all records regardless of limits.'
+        ],
+        correctAnswer: 1,
+        explanation: 'A SOQL for loop provides governor-limit-friendly processing by retrieving records in batches of 200, but the total number of rows returned still counts against the 50,000 row limit. If the query would return more than 50,000 rows, a LimitException is thrown. For processing more records, use Batch Apex.'
+    },
+    {
+        id: 898,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'A developer needs to schedule an Apex class to run every day at midnight.\n\nWhich approach should be used?',
+        options: [
+            'Use the System.schedule() method with a cron expression.',
+            'Use @future with a delay parameter.',
+            'Use Database.executeBatch() with a timer.',
+            'Use a workflow time-based action.'
+        ],
+        correctAnswer: 0,
+        explanation: 'System.schedule() takes a job name, a CRON expression (e.g., \'0 0 0 * * ?\' for midnight daily), and an instance of a class implementing the Schedulable interface. @future does not support delays. Database.executeBatch has no timer parameter. Workflow actions cannot invoke Apex.'
+    },
+    {
+        id: 899,
+        domain: 'Developer Fundamentals',
+        weight: '23%',
+        difficulty: 'Medium',
+        type: 'single',
+        question: 'What is the purpose of the transient keyword in Apex when used with Visualforce?',
+        options: [
+            'It makes the variable available across multiple page requests.',
+            'It prevents the variable from being included in the view state, reducing page size.',
+            'It makes the variable read-only.',
+            'It encrypts the variable value in the page source.'
+        ],
+        correctAnswer: 1,
+        explanation: 'The transient keyword in Apex prevents a variable from being serialized into the Visualforce view state. This reduces the view state size (which has a 170 KB limit) by excluding data that can be recalculated or is only needed temporarily. It does NOT make variables read-only or encrypt them.'
+    },
+    {
+        id: 900,
+        domain: 'Process Automation and Logic',
+        weight: '30%',
+        difficulty: 'Hard',
+        type: 'single',
+        question: 'A developer needs to implement logic that runs after all records in a trigger batch have been committed to the database, and the logic needs to perform DML on other objects.\n\nWhich trigger context should be used?',
+        options: [
+            'before insert',
+            'before update',
+            'after insert',
+            'after update with a @future method for the DML'
+        ],
+        correctAnswer: 2,
+        explanation: 'After insert/update triggers run after the records have been committed to the database. You can perform DML on other objects in after triggers (as long as you don\'t modify Trigger.new directly). A @future method is not necessary for DML in after triggers unless you need callouts or async processing.'
     }
 ];
 console.log(QUESTION_BANK.length);
