@@ -107,8 +107,14 @@ Triggers execute Apex code before or after DML events (`insert`, `update`, `dele
 ### The Golden Trigger Best Practices:
 1. **One Trigger Per Object:** Never write multiple triggers on the same sObject (`AccountTrigger1`, `AccountTrigger2`) because the execution order between two triggers on the same object is **undetermined**.
 2. **Logicless Triggers (`Trigger Handler Pattern`):** The `.trigger` file should only delegate execution to an external helper class (`AccountTriggerHandler.cls`).
-3. **Bulkification:** Always assume `Trigger.new` contains up to 200 records per chunk. **Never put SOQL queries or DML statements inside a `for` loop!**
+3. **Bulkification:** Always assume `Trigger.new` contains up to 200 records per chunk. **Never put SOQL queries or DML statements inside a `for` loop!** (Note: You *cannot* bypass governor limits by extracting the loop variable for a subquery; it still counts as 1 query per iteration).
 4. **Recursion Prevention:** Use a static `Set<Id>` or `Boolean` variable inside your Trigger Handler class to ensure triggers don't fire endlessly during cross-object field updates.
+5. **Same-Record Field Updates:** If you need to update a field on a record based on another field on the *same record* changing, always use **Before Update**. (Using After Update makes the record read-only and throws an exception).
+6. **Trigger Execution Context:** Use `Trigger.isExecuting` to check if the current Apex code is running within a trigger context (as opposed to a Visualforce page, Web service, or Execute Anonymous).
+
+### Triggers vs Flows
+- **Before Triggers fire before Record-Triggered Flows.** 
+- **Recursion:** Record-triggered flows have built-in recursion control. If a flow updates the triggering record, Salesforce prevents it from re-entering the save cycle automatically unless explicitly configured.
 
 ---
 
@@ -130,6 +136,11 @@ When you save a record with an insert, update, or upsert statement, Salesforce e
 13. **Rollup Summary & Cross-Object Formula Updates:** Parent Master records are updated with calculated rollup summary values (which triggers parent object `before update` / `after update` triggers!).
 14. **Criteria-Based Sharing Evaluation:** Re-evaluates sharing rules based on new record values.
 15. **DML Commit to Database:** All DML changes are permanently committed to the database table!
+
+### Exception Handling & Visualforce
+- **Visualforce Errors:** If you use `ApexPages.addMessage()` in a custom controller to display an error, you **must** include the `<apex:pageMessages>` component on the Visualforce page, otherwise the error won't display.
+- **Trigger Errors:** Use `addError('Message')` on the sObject or field in a trigger to prevent DML and show a custom error message.
+- **Callouts after DML:** Making a callout after a DML operation in the same transaction throws "You have uncommitted work pending". To bypass (and undo the DML), you must execute `Database.rollback(sp)` **before** `Database.releaseSavepoint(sp)`.
 
 ---
 
@@ -183,4 +194,7 @@ In the official 2026 PD1 exam outline, **Logic and Process Automation** is the s
 3. **Structured Debug Log Filtering & Exception Stack Traces:**
    - When debugging asynchronous Apex (`@future`, `Batchable`, `Queueable`) or trigger execution chains, Summer '26 introduces structured log filtering (by `APEX_CODE` category or error severity) in VS Code and Developer Console.
    - Exception stack traces have been overhauled to clearly demarcate synchronous vs. asynchronous boundary hops and trigger invocations (`V-T-V-A-W-P-E`).
+4. **ApexDoc Formatting:**
+   - Always use `/**` for the opening delimiter and `*/` for the closing delimiter.
+   - Example tags: `@author`, `@version`, `@param` (must match method parameter order!), `@return`. `@hidden` must be enclosed in braces like `{@hidden}`.
 

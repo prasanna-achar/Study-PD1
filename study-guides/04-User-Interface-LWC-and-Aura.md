@@ -126,7 +126,272 @@ export default class AccountViewer extends LightningElement {
 
 ---
 
-## 6. Notes & Summer '26 (API v67.0) Release Updates (PD1 Syllabus Alignment)
+## 6. Lightning Data Service (LDS) Wire Adapters
+
+LDS provides **pre-built wire adapters** so you can read/write records without writing Apex.
+
+### Key Wire Adapters for PD1
+
+| Adapter | Module | Purpose | DML? |
+| :--- | :--- | :--- | :---: |
+| `getRecord` | `lightning/uiRecordApi` | Get a single record's fields | Read |
+| `getRecords` | `lightning/uiRecordApi` | Get multiple records | Read |
+| `getFieldValue` | `lightning/uiRecordApi` | Extract field value from getRecord result | Read |
+| `createRecord` | `lightning/uiRecordApi` | Create a new record (imperative only) | Write |
+| `updateRecord` | `lightning/uiRecordApi` | Update an existing record (imperative only) | Write |
+| `deleteRecord` | `lightning/uiRecordApi` | Delete a record (imperative only) | Write |
+
+```javascript
+import { LightningElement, wire } from 'lwc';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import NAME_FIELD from '@salesforce/schema/Account.Name';
+import INDUSTRY_FIELD from '@salesforce/schema/Account.Industry';
+
+export default class AccountDetail extends LightningElement {
+    @api recordId;
+
+    @wire(getRecord, { recordId: '$recordId', fields: [NAME_FIELD, INDUSTRY_FIELD] })
+    account;
+
+    get accountName() {
+        return getFieldValue(this.account.data, NAME_FIELD);
+    }
+}
+```
+
+### refreshApex — Force Wire to Re-fetch
+
+After performing DML (imperative Apex), wired data becomes stale. Use `refreshApex()`:
+
+```javascript
+import { refreshApex } from '@salesforce/apex';
+
+// Store the wired result reference
+wiredAccountResult;
+
+@wire(getActiveAccounts)
+wiredAccounts(result) {
+    this.wiredAccountResult = result; // Store the FULL result (data + error)
+    if (result.data) {
+        this.accounts = result.data;
+    }
+}
+
+handleSave() {
+    updateSomething({ ... })
+        .then(() => {
+            return refreshApex(this.wiredAccountResult); // Force re-fetch
+        });
+}
+```
+
+> **Exam trap:** `refreshApex()` requires the **full provisioned value** (the object with `{data, error}`), not just `this.accounts`.
+
+---
+
+## 7. Navigation Service & Toast Notifications
+
+### Navigation (`NavigationMixin`)
+
+Used to navigate to records, pages, URLs, and custom tabs.
+
+```javascript
+import { NavigationMixin } from 'lightning/navigation';
+
+export default class MyComponent extends NavigationMixin(LightningElement) {
+
+    navigateToAccount() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.accountId,
+                objectApiName: 'Account',
+                actionName: 'view'     // 'view', 'edit', 'clone'
+            }
+        });
+    }
+
+    navigateToList() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__objectPage',
+            attributes: {
+                objectApiName: 'Contact',
+                actionName: 'list'
+            }
+        });
+    }
+
+    navigateToWebPage() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: 'https://www.salesforce.com'
+            }
+        });
+    }
+}
+```
+
+**Key `type` values for PD1:**
+
+| Type | What It Opens |
+| :--- | :--- |
+| `standard__recordPage` | Record detail page (view/edit/clone) |
+| `standard__objectPage` | Object home / list view |
+| `standard__webPage` | External URL |
+| `standard__namedPage` | Named page (e.g., 'home') |
+| `standard__navItemPage` | Custom tab |
+
+### Toast Notifications (`ShowToastEvent`)
+
+```javascript
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
+handleSuccess() {
+    this.dispatchEvent(new ShowToastEvent({
+        title: 'Success',
+        message: 'Account updated successfully!',
+        variant: 'success'    // 'success', 'error', 'warning', 'info'
+    }));
+}
+```
+
+| Variant | Color | Use For |
+| :--- | :--- | :--- |
+| `success` | Green | Record saved/created |
+| `error` | Red | Errors/failures |
+| `warning` | Yellow | Caution notices |
+| `info` | Grey | Informational |
+
+---
+
+## 8. `.js-meta.xml` Configuration
+
+This XML file controls **where** your LWC can be used and what properties are exposed.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>My Account Card</masterLabel>
+    <description>Displays account details</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <objects>
+                <object>Account</object>
+            </objects>
+            <property name="showRevenue" type="Boolean" default="true"
+                      label="Show Revenue" description="Toggle revenue display"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>
+```
+
+### Key Elements for PD1
+
+| Element | Purpose |
+| :--- | :--- |
+| `<isExposed>true</isExposed>` | **Required** to make the component available in App Builder, Flow, etc. |
+| `<targets>` | Where the component can be placed |
+| `<targetConfigs>` | Object-specific settings and design-time properties |
+| `<property>` | Exposes configurable attributes in Lightning App Builder |
+
+### Target Values
+
+| Target | Where It Appears |
+| :--- | :--- |
+| `lightning__RecordPage` | Record detail page |
+| `lightning__AppPage` | Lightning App page (single-page app) |
+| `lightning__HomePage` | Home page |
+| `lightning__FlowScreen` | Screen Flow (as a flow screen component) |
+| `lightning__UtilityBar` | Utility bar |
+| `lightningCommunity__Page` | Experience Cloud (community) page |
+
+---
+
+## 9. Visualforce Essentials (2-4 Exam Questions)
+
+| Concept | Details |
+| :--- | :--- |
+| **Standard Controller** | Auto-generated controller for each sObject. Provides CRUD + navigation. `<apex:page standardController="Account">` |
+| **Controller Extension** | Adds custom logic to a standard controller. `<apex:page standardController="Account" extensions="MyExtension">`. Extension constructor takes `ApexPages.StandardController` parameter. |
+| **Custom Controller** | Fully custom Apex controller. `<apex:page controller="MyCustomController">`. No standard CRUD built in. |
+| **`renderAs="pdf"`** | Generates PDF output: `<apex:page renderAs="pdf">`. Primary Visualforce use case on modern exams. |
+| **Action methods** | Button clicks invoke controller methods: `<apex:commandButton action="{!save}" value="Save"/>` |
+
+---
+
+## 10. Aura Components Reference (Legacy — Expect 2-4 Questions)
+
+### Aura Rendering Lifecycle
+
+```
+init → render → afterRender
+```
+
+| Event | When | Use For |
+| :--- | :--- | :--- |
+| `init` | Component initialization complete | Fetch initial data, set defaults |
+| `render` | Component rendering starts | Rarely used directly |
+| `afterRender` | Rendering complete, DOM ready | DOM manipulation, third-party JS |
+
+❌ "start" and "load" are **NOT** valid Aura lifecycle events.
+
+### Aura Event Types
+
+| Type | Scope | Handler Attribute | Use When |
+| :--- | :--- | :--- | :--- |
+| **Component Event** | Parent-child hierarchy only | `<aura:handler name="myEvt" event="c:MyEvt" action="{!c.handle}"/>` | Direct parent-child communication |
+| **Application Event** | **ALL components on the page** | `<aura:handler event="c:MyAppEvt" action="{!c.handle}"/>` | Broadcasting to unrelated components |
+
+**Exam rule:** "May or may not be in the same parent" → **Application event**.
+
+### Aura Bundle Files
+
+| File | Extension | Purpose |
+| :--- | :--- | :--- |
+| Component | `.cmp` | Markup (HTML-like template) |
+| Controller | `Controller.js` | Event handler functions |
+| **Helper** | `Helper.js` | **Reusable shared functions** (called from Controller or other JS) |
+| Style | `.css` | Component styling |
+| Design | `.design` | Exposes attributes for Lightning App Builder |
+| Renderer | `Renderer.js` | Custom rendering behavior |
+
+### Aura Server Calls (`$A.enqueueAction`)
+
+```javascript
+// Aura Controller.js
+({
+    loadAccounts : function(component, event, helper) {
+        var action = component.get("c.getAccounts");  // Server action
+        action.setParams({ industry: "Technology" });
+        action.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                component.set("v.accounts", response.getReturnValue());
+            }
+        });
+        $A.enqueueAction(action);  // Add to queue
+    }
+})
+```
+
+### LWC ↔ Aura Interop
+
+- LWC can be **wrapped inside** an Aura component
+- Aura **cannot** be placed inside LWC
+- Use case: When LWC needs access to an Aura-only feature (e.g., `force:navigateToSObject` before NavigationMixin was available)
+
+---
+
+## 11. Notes & Summer '26 (API v67.0) Release Updates (PD1 Syllabus Alignment)
 
 ### Syllabus Alignment Note (Domain Weighting: ~24% - 25%)
 The **User Interface** domain is the second largest section (~15 questions). Modern PD1 exams heavily emphasize **Lightning Web Components (LWC)** (`@wire`, lifecycle hooks, props, events) and how LWC integrates with Apex and legacy Aura/Visualforce architectures.

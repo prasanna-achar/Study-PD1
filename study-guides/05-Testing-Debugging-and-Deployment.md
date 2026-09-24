@@ -96,7 +96,7 @@ Salesforce provides four distinct sandbox types for development and testing:
 ### Deployment Tools Comparison
 1. **Salesforce CLI (`sf` / `sfdx`) & Source Tracking:**
    - Modern metadata deployment using source-driven development (`force-app/main/default/`).
-   - Supports Scratch Orgs (short-lived ephemeral orgs created from a Dev Hub) and continuous integration (CI/CD) pipelines (`sf project deploy start`).
+   - Supports Scratch Orgs and continuous integration (CI/CD) pipelines (`sf project deploy start`).
 2. **Change Sets:**
    - Point-and-click deployment tool inside Salesforce Setup.
    - Requires an active deployment connection between connected orgs (e.g., Sandbox -> Production).
@@ -104,6 +104,66 @@ Salesforce provides four distinct sandbox types for development and testing:
 3. **Unmanaged vs. Managed Packages:**
    - **Unmanaged Packages:** Open-source bundles where code is visible and editable by the target org admin upon installation. Upgrades are NOT supported.
    - **Managed Packages:** IP-protected, obfuscated code bundles distributed via AppExchange by ISVs. Namespaced (`ns__Object__c`) and fully upgradable without breaking subscriber data.
+4. **Second-Generation Packages (2GP):**
+   - Modern package development using Scratch Orgs and the Salesforce CLI.
+   - Supports versioned upgrades, CI/CD pipelines, and unlocked packages.
+   - Uses `sf package create` and `sf package version create`.
+
+### Scratch Orgs & Dev Hub
+
+| Concept | Details |
+| :--- | :--- |
+| **Dev Hub** | A production or business org that enables Scratch Org creation. Enabled in Setup → Dev Hub. |
+| **Scratch Org** | Short-lived, disposable org (max 30 days) created from a `project-scratch-def.json` config file. |
+| **Purpose** | Source-driven development, CI/CD, isolated feature development and testing. |
+| **Create** | `sf org create scratch -f config/project-scratch-def.json -d -y 7` (7-day duration) |
+| **Push/Pull** | `sf project deploy start` (push source to scratch org), `sf project retrieve start` (pull changes) |
+| **Limits** | Active scratch org limits depend on Dev Hub edition (typically 3-40 active). |
+
+```json
+// project-scratch-def.json example
+{
+    "orgName": "PD1 Dev Org",
+    "edition": "Developer",
+    "features": ["EnableSetPasswordInApi"],
+    "settings": {
+        "lightningExperienceSettings": {
+            "enableS1DesktopEnabled": true
+        }
+    }
+}
+```
+
+### Testing Platform Events
+
+```apex
+@isTest
+static void testPlatformEvent() {
+    Test.startTest();
+
+    // Publish the event
+    Order_Event__e evt = new Order_Event__e(
+        Status__c = 'Completed',
+        Amount__c = 5000
+    );
+    Database.SaveResult sr = EventBus.publish(evt);
+    Assert.isTrue(sr.isSuccess(), 'Event should publish successfully');
+
+    Test.stopTest();  // Forces event delivery to trigger subscribers
+
+    // Assert trigger side effects here
+}
+```
+
+### Testing Async Apex
+
+| Async Type | How to Test |
+| :--- | :--- |
+| `@future` | Call the method between `Test.startTest()` and `Test.stopTest()` — executes synchronously |
+| `Queueable` | `System.enqueueJob()` between `startTest/stopTest` |
+| `Batch` | `Database.executeBatch()` between `startTest/stopTest` — processes all records in one `execute()` call |
+| `Schedulable` | Use `System.schedule()` with a cron string, or just test the `execute()` method directly |
+| **HTTP Callouts** | Must use `Test.setMock(HttpCalloutMock.class, mockInstance)` — real callouts blocked in tests |
 
 ---
 

@@ -1,6 +1,112 @@
 # 📈 PD1 Exam Progress Tracker
 
-## Exam Paper 1: Developer Fundamentals Part 1 (K2 University)
+## All Exam Results
+
+| Paper | Exam Name | Attempt | Date | Score | % | Time | vs Pass (68%) |
+| :--- | :--- | :---: | :--- | :---: | :---: | :---: | :--- |
+| Paper 1 | Developer Fundamentals | Attempt 1 | 2026-09-22 | 22/58 | 37.93% | 1h 29m | -30.07% ❌ |
+| Paper 1 | Developer Fundamentals | Attempt 2 | 2026-09-23 | 37/58 | 63.79% | 1h 07m | -4.21% ❌ |
+| Paper 2 | Process Automation & Logic | Attempt 1 | 2026-09-23 | 34/51 | 66.67% | 38m | -1.33% ❌ |
+| Paper 1 | Developer Fundamentals | Attempt 3 | 2026-09-24 | 49/58 | 84.48% | 40m | +16.48% ✅ |
+| Paper 2 | Process Automation & Logic | Attempt 2 | 2026-09-24 | 48/51 | 94.12% | 28m | +26.12% ✅ |
+| **Paper 3** | **Process Automation Pt 2** | **Attempt 1** | **2026-09-24** | **40/49** | **81.63%** | **43m** | **+13.63% ✅** |
+
+---
+
+## 🔥 Paper 1 Progression: 37% → 63% → 84%
+
+```
+Attempt 1: ██████████░░░░░░░░░░░░░░░░░░░░ 37.93%  (22/58)
+Attempt 2: ████████████████████░░░░░░░░░░ 63.79%  (37/58)
+Attempt 3: █████████████████████████░░░░░ 84.48%  (49/58)  ✅ PASS
+Pass Mark: ████████████████████░░░░░░░░░░ 68.00%
+```
+
+**+27 questions fixed in 2 days. Time cut from 1h 29m → 40m.**
+
+---
+
+## Stubborn Mistakes FINALLY Fixed ✅
+
+| Mistake | Attempts Wrong | Now |
+| :--- | :---: | :--- |
+| `getRecordTypeInfosById()` | 1, 2 | ✅ Fixed in Attempt 3 |
+| Indirect Lookup (not External) | 1, 2 | ✅ Fixed in Attempt 3 |
+| `__Latitude__s` (not `__c`) | 1, 2 | ✅ Fixed in Attempt 3 |
+| Stateful client / Stateless server | 1, 2 | ✅ Fixed in Attempt 3 |
+| Application event (not Component) | 1, 2 | ✅ Fixed in Attempt 3 |
+
+---
+
+## Remaining Gaps — 9 Wrong in Attempt 3
+
+### Pattern 1: Multi-tenant Facts (Still Shaky)
+
+| Fact | Your Mistake | Correct |
+| :--- | :--- | :--- |
+| Shared database | Chose "own database" | Share BOTH code AND database |
+| Indexing | Chose "can't index" | Custom indexes DO exist, queries must be selective |
+
+### Pattern 2: Roll-up Summary Limitations (Wrong 3 Times)
+
+```
+Roll-up Summary:  COUNT, SUM, MIN, MAX  ✅
+Roll-up Summary:  AVERAGE              ❌ (not supported — use SUM/COUNT formula)
+Roll-up Summary:  Cross-object formula  ❌ (not supported — can't reference formulas)
+```
+
+### Pattern 3: Platform Event Architecture
+
+```
+Publish from external: REST API (POST to /sobjects/MyEvent__e/)
+Subscribe from external: CometD / EMP Connector
+Subscribe in Salesforce: Apex Trigger / Flow
+NO custom object needed for platform events
+```
+
+### Pattern 4: Agentforce Feature Boundaries
+
+| Feature | What It Does | NOT What It Does |
+| :--- | :--- | :--- |
+| Rules & Workflows | Naming conventions + security compliance | NOT test creation |
+| Test Case Generation | Automates test creation | Separate feature |
+| MCP | Open standard for live org data access | NOT proprietary |
+| Extension Pack | FREE in VSCode + Code Builder | NOT paid |
+| Pro model fallback | Auto-redirects to SFR model | NOT rejected |
+
+### Pattern 5: Running Flows on Schedule
+
+```
+✅ Schedule-triggered flow (declarative)
+✅ Apex Schedulable class → Flow.Interview (programmatic)
+❌ "Scheduled Jobs" page in Setup (that's for VIEWING jobs, not configuring flows)
+```
+
+---
+
+## Cross-Exam Weakness Map
+
+| Topic | Paper 1 (Att 3) | Paper 2 (Att 1) | Priority |
+| :--- | :---: | :---: | :--- |
+| Multi-tenant facts | ❌ (2 wrong) | — | 🔴 HIGH |
+| Roll-up limitations | ❌ (2 wrong) | — | 🔴 HIGH |
+| Agentforce features | ❌ (3 wrong) | — | 🟡 MEDIUM |
+| Platform events | ❌ (1 wrong) | — | 🟡 MEDIUM |
+| Inner class sharing | — | ❌ | 🟡 MEDIUM |
+| Anonymous blocks = user mode | — | ❌ | 🟡 MEDIUM |
+| Geolocation suffix | ✅ FIXED | ❌ | ✅ Fixed on Paper 1 |
+| DML-restricted objects | — | ❌ | 🟡 MEDIUM |
+| AsyncOptions API | — | ❌ | 🟡 MEDIUM |
+
+
+## All Exam Results
+
+| Paper | Exam Name | Attempt | Date | Score | % | Time | vs Pass (68%) |
+| :--- | :--- | :---: | :--- | :---: | :---: | :---: | :--- |
+| Paper 1 | Developer Fundamentals | Attempt 1 | 2026-09-22 | 22/58 | 37.93% | 1h 29m | -30.07% ❌ |
+| Paper 1 | Developer Fundamentals | Attempt 2 | 2026-09-23 | 37/58 | **63.79%** | 1h 07m | -4.21% ⚠️ |
+| Paper 2 | Process Automation & Logic | Attempt 1 | 2026-09-23 | 34/51 | 66.67% | 38m | -1.33% ⚠️ |
+| **Paper 3** | **Process Automation Pt 2** | **Attempt 1** | **2026-09-24** | **40/49** | **81.63%** | **43m** | **+13.63% ✅** |
 
 | Attempt | Date | Score | Percentage | Time | vs Pass (68%) |
 | :--- | :--- | :---: | :---: | :---: | :--- |
@@ -109,3 +215,20 @@ Roll-up Summary field → can summarize: COUNT, SUM, MIN, MAX
 ❌ "Share code, own database"
 ✅ "Share BOTH code AND database" → that's why governor limits exist
 ```
+
+---
+
+## Paper 3 (Process Automation Pt 2) — New Gaps
+
+You crushed this one with 81.63% on a completely fresh paper! 
+
+Here are the 9 mistakes to review:
+1. **Bulk Triggers**: Triggers support data import, bulk API, mass actions. ("before undelete" doesn't exist).
+2. **Trigger Management**: Triggers can be deactivated. API versions can be set. UI *cannot* create Attachment triggers. 
+3. **Same-Record Update**: If a field on a record updates *another* field on the *same record*, use **Before Update**, not After Update.
+4. **Trigger.isExecuting**: Checks if context is a trigger. (Not `isUpdate`).
+5. **SOQL limit bypass trap**: You CANNOT bypass limits. Putting a SOQL query inside a loop (like `[SELECT Id FROM LineItem__c WHERE Invoice__c = :invoice.Id]`) will hit the 100 query limit.
+6. **Trigger + Flow recursion**: Before triggers fire first, then record-triggered flows. Built-in recursion control prevents infinite loops when they both update the same record.
+7. **Visualforce errors**: Need `<apex:pageMessages>` component to display `ApexPages.addMessage()` messages on the page.
+8. **Callout after DML**: Rollback *first*, then release savepoint: `Database.rollback(sp); Database.releaseSavepoint(sp);`
+9. **ApexDoc**: Starts with `/**` and ends with `*/`. The `@param` tags must match parameter order.

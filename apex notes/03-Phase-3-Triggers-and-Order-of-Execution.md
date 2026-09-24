@@ -176,23 +176,67 @@ if (TriggerControl.isFirstRun) {
 ```
 *Note: Advanced orgs use comprehensive Trigger Frameworks (like Kevin O'Hara's or Mitch Spano's) that handle routing, recursion, and bypasses automatically.*
 
-## 5. Salesforce Order of Execution
+## 5. Salesforce Order of Execution (Full 14-Step)
 
 Understanding the exact sequence of events when a record is saved is vital. If a process isn't working as expected, it's often due to the order of execution.
 
-**The Simplified Exact Sequence:**
-1.  **System Validation:** Checks for required fields, field formats, and length.
-2.  **`Before` Triggers:** Execute.
-3.  **Custom Validation:** Validation Rules execute.
-4.  **Duplicate Rules:** Execute.
-5.  **Save to Database:** Record is saved to the database, but *not yet committed*. At this point, the record gets its ID.
-6.  **`After` Triggers:** Execute.
-7.  **Assignment Rules:** Execute.
-8.  **Auto-Response Rules:** Execute.
-9.  **Workflow Rules:** Execute. *(Note: If a Workflow Rule updates a field, the Before and After triggers fire one more time. Custom validation rules, duplicate rules, and escalation rules are not run again).*
-10. **Escalation Rules:** Execute.
-11. **Flows:** Record-triggered flows (After-save) execute.
-12. **Rollup Summaries:** Rollup summary fields on the parent are calculated. Parent goes through save procedure.
-13. **Database Commit:** All DML operations are committed to the database.
+### The Complete Sequence
 
-*Pro-tip: A common exam question involves knowing that Validation Rules run AFTER Before Triggers.*
+```
+ 1. System Validation (required fields, field formats, max length)
+ 2. Record-Triggered Flows: BEFORE-SAVE (Fast Field Updates)
+ 3. Before Triggers execute
+ 4. Custom Validation Rules execute
+ 5. Duplicate Rules execute
+ 6. Record saved to database (NOT committed yet — record gets its Id)
+ 7. After Triggers execute
+ 8. Assignment Rules execute
+ 9. Auto-Response Rules execute
+10. Workflow Rules execute
+    → If Workflow updates a field:
+      - Before & After triggers fire AGAIN
+      - Validation rules, duplicate rules do NOT re-fire
+11. Escalation Rules execute
+12. Record-Triggered Flows: AFTER-SAVE execute
+13. Roll-up Summary fields calculated (parent record goes through its own save)
+14. DML operations committed to the database
+```
+
+### Exam Traps — Most Tested Facts
+
+| Trap | What the Exam Tests |
+| :--- | :--- |
+| **Validation runs AFTER before triggers** | If you set a field in a before trigger, validation rules see the NEW value |
+| **Before-save flows run BEFORE triggers** | Flows (fast field updates) execute at step 2, before Apex triggers at step 3 |
+| **Workflow field updates re-fire triggers** | Only before/after triggers re-fire. Validation rules do NOT re-run |
+| **Record gets Id at step 6** | `Trigger.new[0].Id` is `null` in before insert, available in after insert |
+| **After-save flows run AFTER triggers** | After-save flows (step 12) run after after triggers (step 7) |
+| **Roll-ups cascade** | Parent's roll-up recalculation causes the parent to go through its OWN save cycle |
+
+### When Does Each Context Variable Exist?
+
+| Variable | before insert | after insert | before update | after update | before delete | after delete | after undelete |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| `Trigger.new` | ✅ | ✅ (read-only) | ✅ | ✅ (read-only) | ❌ | ❌ | ✅ |
+| `Trigger.newMap` | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ |
+| `Trigger.old` | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| `Trigger.oldMap` | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ |
+
+**Key insight:** `Trigger.newMap` is NOT available in `before insert` because the records don't have IDs yet (IDs are assigned at step 6).
+
+### Common Exam Scenario: Comparing Old and New Values
+
+```apex
+trigger OpportunityTrigger on Opportunity (before update) {
+    for (Opportunity opp : Trigger.new) {
+        Opportunity oldOpp = Trigger.oldMap.get(opp.Id);
+
+        // Only act when Stage changed to 'Closed Won'
+        if (opp.StageName == 'Closed Won' && oldOpp.StageName != 'Closed Won') {
+            opp.Description = 'Closed on ' + Date.today();
+        }
+    }
+}
+```
+
+*Pro-tip: A common exam question involves knowing that Validation Rules run AFTER Before Triggers. Another frequent question tests whether `Trigger.newMap` is available in `before insert` (it's NOT — no IDs yet).*
