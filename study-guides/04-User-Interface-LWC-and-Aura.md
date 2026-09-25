@@ -316,78 +316,118 @@ This XML file controls **where** your LWC can be used and what properties are ex
 
 ---
 
-## 9. Visualforce Essentials (2-4 Exam Questions)
+## 9. Visualforce Essentials (Expanded)
 
-| Concept | Details |
-| :--- | :--- |
-| **Standard Controller** | Auto-generated controller for each sObject. Provides CRUD + navigation. `<apex:page standardController="Account">` |
-| **Controller Extension** | Adds custom logic to a standard controller. `<apex:page standardController="Account" extensions="MyExtension">`. Extension constructor takes `ApexPages.StandardController` parameter. |
-| **Custom Controller** | Fully custom Apex controller. `<apex:page controller="MyCustomController">`. No standard CRUD built in. |
-| **`renderAs="pdf"`** | Generates PDF output: `<apex:page renderAs="pdf">`. Primary Visualforce use case on modern exams. |
-| **Action methods** | Button clicks invoke controller methods: `<apex:commandButton action="{!save}" value="Save"/>` |
+Although Visualforce is considered legacy, it is still tested on the PD1 exam. You need to understand controllers, limits, and how Visualforce handles state.
+
+### Controller Types & Syntax
+
+| Concept | Syntax | Details |
+| :--- | :--- | :--- |
+| **Standard Controller** | `<apex:page standardController="Account">` | Auto-generated. Provides standard CRUD, navigation, and fields. |
+| **Standard List Controller**| `<apex:page standardController="Account" recordSetVar="accounts">` | Allows working with a list of records. Provides pagination (`next()`, `previous()`). |
+| **Custom Controller** | `<apex:page controller="MyCustomController">` | Fully custom Apex class. Runs in **system mode** by default (ignores object/field security unless using `with sharing`). |
+| **Controller Extension** | `<apex:page standardController="Account" extensions="MyExt">` | Adds logic to a standard controller. Constructor **must** take `ApexPages.StandardController` as an argument. Runs in **user mode** (respects sharing). |
+
+### Getters, Setters, and Action Methods
+- **Getters (`getRecords()`)**: Read values from Apex to the VF page (`{!records}`).
+- **Setters (`setRecords()`)**: Pass values from the VF page back to Apex.
+- **Action Methods**: Invoked by buttons/links (e.g., `<apex:commandButton action="{!save}">`). Return a `PageReference` to navigate, or `null` to refresh the current page.
+
+### The View State & `transient`
+- **View State**: A hidden form field that maintains the state of the database and components between server requests. 
+- **Limit**: Maximum view state size is **135 KB**.
+- **`transient` Keyword**: Use `transient` in your Apex controller for variables that do **not** need to be saved in the view state (e.g., temporary lists, large queries used once for rendering).
+
+### AJAX and Apex Invocation
+- `<apex:actionFunction>`: Allows calling an Apex method directly from JavaScript.
+- `<apex:actionSupport>`: Adds AJAX support (like `onclick` or `onchange`) to another VF component.
+- `<apex:actionPoller>`: Periodically sends an AJAX request to call an Apex method.
+
+### Page Messages
+- `<apex:pageMessages>`: Displays ALL error messages generated on the page (e.g., from `ApexPages.addMessage()`).
+- `<apex:pageMessage>`: Displays a single, hardcoded custom message on the page.
+
+### Security
+- Protect against **Cross-Site Scripting (XSS)** when rendering user input via JavaScript by using functions like `{!JSENCODE(userInput)}` or `HTMLENCODE()`.
 
 ---
 
-## 10. Aura Components Reference (Legacy — Expect 2-4 Questions)
+## 10. Aura Components Reference (Expanded)
 
-### Aura Rendering Lifecycle
+Aura is the precursor to LWC. Expect questions on events, interfaces, and how it compares to LWC.
 
-```
-init → render → afterRender
-```
-
-| Event | When | Use For |
-| :--- | :--- | :--- |
-| `init` | Component initialization complete | Fetch initial data, set defaults |
-| `render` | Component rendering starts | Rarely used directly |
-| `afterRender` | Rendering complete, DOM ready | DOM manipulation, third-party JS |
-
-❌ "start" and "load" are **NOT** valid Aura lifecycle events.
-
-### Aura Event Types
-
-| Type | Scope | Handler Attribute | Use When |
-| :--- | :--- | :--- | :--- |
-| **Component Event** | Parent-child hierarchy only | `<aura:handler name="myEvt" event="c:MyEvt" action="{!c.handle}"/>` | Direct parent-child communication |
-| **Application Event** | **ALL components on the page** | `<aura:handler event="c:MyAppEvt" action="{!c.handle}"/>` | Broadcasting to unrelated components |
-
-**Exam rule:** "May or may not be in the same parent" → **Application event**.
+### Component Structure & Attributes
+- **Attributes**: Defined using `<aura:attribute name="accName" type="String" default="Acme" access="global" />`.
+- **Value Binding**: 
+  - `{!v.accName}` = Two-way binding (changes in UI update JS, changes in JS update UI).
+  - `{#v.accName}` = One-way binding (updates in JS do not reflect in UI after initial render).
 
 ### Aura Bundle Files
 
 | File | Extension | Purpose |
 | :--- | :--- | :--- |
-| Component | `.cmp` | Markup (HTML-like template) |
-| Controller | `Controller.js` | Event handler functions |
-| **Helper** | `Helper.js` | **Reusable shared functions** (called from Controller or other JS) |
-| Style | `.css` | Component styling |
-| Design | `.design` | Exposes attributes for Lightning App Builder |
-| Renderer | `Renderer.js` | Custom rendering behavior |
+| Component | `.cmp` | Markup (HTML-like template). Starts with `<aura:component>`. |
+| Controller | `Controller.js` | Client-side event handler functions. |
+| **Helper** | `Helper.js` | **Reusable shared functions**. Keep logic here to share across controller methods. |
+| Style | `.css` | Component styling (scoped). |
+| Design | `.design` | Exposes attributes for configuration in Lightning App Builder. |
+
+### Aura Interfaces (Where can it be used?)
+To use an Aura component in specific places, it must implement interfaces:
+- `force:appHostable`: Custom tab.
+- `flexipage:availableForAllPageTypes`: App Builder (App/Home/Record pages).
+- `force:hasRecordId`: Automatically provides the ID of the current record (no attribute definition needed).
+
+### Aura Event Types & Propagation
+
+| Type | Syntax | Scope / Propagation |
+| :--- | :--- | :--- |
+| **Component Event** | Register: `<aura:registerEvent>`<br>Fire: `cmp.getEvent("myEvent").fire()` | Parent-child hierarchy only. Follows **Capture** (root to source) and **Bubble** (source to root) phases. |
+| **Application Event** | Register: `<aura:registerEvent>`<br>Fire: `$A.get("e.c:MyAppEvent").fire()` | **ALL components on the page** (broadcasting). Follows Capture, Bubble, and Default phases. |
+
+> **Exam rule:** "May or may not be in the same parent" → **Application event**.
+
+### Lightning Data Service for Aura
+- `<force:recordData>` is the Aura equivalent to LWC's `@wire(getRecord)`. It performs CRUD operations without Apex.
 
 ### Aura Server Calls (`$A.enqueueAction`)
+To call Apex, the Apex method must be `@AuraEnabled`.
 
 ```javascript
 // Aura Controller.js
 ({
     loadAccounts : function(component, event, helper) {
-        var action = component.get("c.getAccounts");  // Server action
+        var action = component.get("c.getAccounts");  // Server action mapping
         action.setParams({ industry: "Technology" });
+        
+        // Define callback
         action.setCallback(this, function(response) {
             var state = response.getState();
             if (state === "SUCCESS") {
                 component.set("v.accounts", response.getReturnValue());
+            } else if (state === "ERROR") {
+                // Handle error
             }
         });
-        $A.enqueueAction(action);  // Add to queue
+        // Add to execution queue
+        $A.enqueueAction(action);
     }
 })
 ```
 
-### LWC ↔ Aura Interop
+### Aura Rendering Lifecycle
+```
+init → render → afterRender
+```
+- `init`: Component initialization complete (Fetch initial data).
+- `afterRender`: Rendering complete, DOM ready (DOM manipulation, third-party JS).
+*(❌ "start" and "load" are **NOT** valid Aura lifecycle events.)*
 
-- LWC can be **wrapped inside** an Aura component
-- Aura **cannot** be placed inside LWC
-- Use case: When LWC needs access to an Aura-only feature (e.g., `force:navigateToSObject` before NavigationMixin was available)
+### LWC ↔ Aura Interop
+- **LWC can be wrapped inside an Aura component.**
+- **Aura CANNOT be placed inside LWC.**
+- Events: LWC fires standard DOM `CustomEvent`. Aura parent listens using standard `onmyevent="{!c.handleEvent}"` syntax.
 
 ---
 
