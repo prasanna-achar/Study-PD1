@@ -56,7 +56,97 @@ private class AccountTriggerTest {
 | **`@TestSetup`** | Method runs once before any individual test method in the class starts, generating common test records in the rollback sandbox. | Modifying `@TestSetup` records inside one test method does **not** affect other test methods (changes are rolled back after each test). |
 | **`System.runAs(User u)`** | Executes the enclosed block of code as a specific test User record. | Used to test **Profile permissions, Role hierarchies, and Record Sharing rules** (`with sharing`). Does not enforce user license limits. |
 | **`Test.setMock(HttpCalloutMock.class, mock)`** | Intercepts HTTP/REST callouts made from Apex during a unit test and returns fake canned HTTP responses (`HttpResponse`). | **Mandatory for callout testing!** Salesforce blocks real HTTP callouts to external servers during unit tests (`CalloutException`). |
-| **`Test.loadData(Account.sObjectType, 'StaticResourceName')`** | Loads CSV data pre-uploaded as a Static Resource directly into test sObjects. | Returns a `List<sObject>` of inserted records. |
+| **`Test.loadData(Account.sObjectType, 'StaticResourceName')`** | Loads CSV data pre-uploaded as a Static Resource directly into test sObjects. | Returns a `List<sObject>` of inserted records. Steps: 1) Create .csv, 2) Upload as Static Resource, 3) Call `Test.loadData()`. |
+| **`Test.getStandardPricebookId()`** | Returns the ID of the standard price book. | Use this in tests to create PricebookEntry records without `SeeAllData=true`. |
+| **`@TestVisible`** | Makes private/protected methods, variables, and inner classes visible to test classes. | Does NOT change the access modifier — only test code can see it. |
+
+### Data Access in Tests (Without SeeAllData)
+
+Tests can **always** access these org management / metadata objects:
+```
+✅ User
+✅ Profile
+✅ RecordType
+✅ Organization
+✅ CronTrigger (scheduled jobs)
+```
+
+Tests **cannot** access these without `SeeAllData=true`:
+```
+❌ Custom Objects (Account, Contact, MyObj__c)
+❌ Custom Settings
+❌ Custom Metadata Types (accessible but read-only by design)
+```
+
+### sObject Error Methods (for testing addError in triggers)
+
+| Method | Returns | Purpose |
+| :--- | :--- | :--- |
+| `record.addError('msg')` | void | Adds an error to the record |
+| `record.addError('FieldName', 'msg')` | void | Adds an error to a specific field |
+| `record.hasErrors()` | `Boolean` | Returns true if any errors have been added |
+| `record.getErrors()` | `List<Database.Error>` | Returns list of all errors |
+
+> ⚠️ `containsErrors()` and `errors()` do NOT exist!
+
+### Assert Class (Modern) vs System Class (Legacy)
+
+| Assert Class (Recommended) | System Class (Legacy) | Purpose |
+| :--- | :--- | :--- |
+| `Assert.areEqual(expected, actual)` | `System.assertEquals(expected, actual)` | Values are equal |
+| `Assert.areNotEqual(expected, actual)` | `System.assertNotEquals(expected, actual)` | Values are NOT equal |
+| `Assert.isTrue(condition)` | `System.assert(condition)` | Condition is true |
+| `Assert.isFalse(condition)` | — | Condition is false |
+| `Assert.isNotNull(value)` | — | Value is not null |
+| `Assert.isNull(value)` | — | Value is null |
+| `Assert.isInstanceOfType(obj, Type)` | — | Object is of a specific type |
+
+> ⚠️ `System.isNotNull()`, `System.isEqual()` do NOT exist!
+
+### Positive vs Negative Testing
+
+| Type | What You Test | Example |
+| :--- | :--- | :--- |
+| **Positive** | Code works correctly with valid input | `Assert.areEqual('Hot', acc.Rating)` after setting Credit = 'Excellent' |
+| **Negative** | Code handles invalid/missing input correctly | `Assert.isTrue(acc.Rating != 'Hot')` after setting Credit = 'Poor' |
+| **Bulk** | Code works with 200+ records (governor limits) | Insert 200 records, verify all processed |
+| **User Context** | Code respects permissions/sharing | `System.runAs(limitedUser)` then verify access denied |
+
+### Where to Run Tests
+
+| Location | Notes |
+| :--- | :--- |
+| **Developer Console** → Test menu → New Run | Can skip code coverage in Settings. Multiple classes = always async. |
+| **Setup** → Application Test Execution | Can select all or specific classes. Can skip code coverage. |
+| **Apex Classes page in Setup** | Has "Run All Tests" button only (no individual selection). |
+| **VS Code / Code Builder** | Via Salesforce Extensions. Can run individual methods. |
+| **SOAP API / Tooling REST API** | Programmatic test execution. |
+
+> ⚠️ `ApexTestRun` method does NOT exist. Data Loader CANNOT run tests.
+
+### Code Coverage Rules
+
+| Rule | Details |
+| :--- | :--- |
+| **75% overall minimum** | Must hit 75% across ALL Apex in the org to deploy to production |
+| **Every trigger needs some coverage** | Not necessarily 75% each, but > 0% |
+| **Test classes/methods NOT counted** | Lines inside `@isTest` classes don't count toward the total |
+| **Comments, blank lines excluded** | Only executable lines count |
+| **Multiple statements on one line** | Counted as ONE line |
+| **`System.debug()` alone on a line** | NOT counted |
+| **Selected tests during deploy** | Each component must individually hit 75% (different from overall!) |
+
+### API Version & Default Test Behavior
+
+| API Version | Default Behavior on Deploy |
+| :--- | :--- |
+| **v33.0 and earlier** | All **local tests** run (excludes managed package tests) |
+| **v34.0 and later** | No tests run by default IF the package has no Apex classes/triggers |
+
+### Test Suite
+- A **test suite** is a saved collection of test classes that can be run together repeatedly.
+- Created via Developer Console → Test menu → Suite Manager.
+- Suite Manager = create/delete/edit suites. It does NOT abort tests or skip coverage.
 
 ---
 

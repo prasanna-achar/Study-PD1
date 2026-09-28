@@ -276,3 +276,162 @@ Default behavior: `<apex:outputText escape="true">` escapes HTML by default. But
   - `sforce.one.navigateToURL('/apex/MyPage')` — Navigate to a URL.
   - `sforce.one.createRecord('Account')` — Open a new record form.
 - Add `lightningStylesheets="true"` to `<apex:page>` to apply Lightning styling to a classic VF page.
+
+---
+
+## 9. StandardSetController (CRITICAL — Learn Every Method)
+
+### Constructor
+Accepts ONLY two types:
+- `List<sObject>` — a list of records
+- `Database.QueryLocator` — a query locator
+
+> ❌ `Set<sObject>`, `Map<Id, sObject>` are NOT valid!
+
+### 10,000 Record Limit
+
+| Constructor Type | What happens if > 10,000 records? |
+| :--- | :--- |
+| **`List<sObject>`** | List is **silently truncated** to 10,000. NO exception. |
+| **`Database.QueryLocator`** | **`LimitException` is thrown.** |
+
+### Key Methods
+
+| Method | Returns | Purpose |
+| :--- | :--- | :--- |
+| `getRecords()` | `List<sObject>` | Returns all records on the **current page** |
+| `getSelected()` | `List<sObject>` | Returns only the **user-selected** records |
+| `getRecord()` | `sObject` (SINGULAR!) | Returns a **prototype** sObject for **mass updates** — changes to this apply to ALL selected records |
+| `getCompleteResult()` | `Boolean` | Returns **FALSE** if there are more records than the controller can process |
+| `getResultSize()` | `Integer` | Total number of records |
+| `setPageSize(Integer)` | void | Set records per page |
+| `first()` / `last()` / `next()` / `previous()` | void | Pagination navigation |
+| `getHasNext()` / `getHasPrevious()` | `Boolean` | Check if more pages exist |
+
+> ⚠️ `getChecked()`, `getCheckedList()`, `getSelection()` do NOT exist!
+> ⚠️ `getRecord()` is SINGULAR — returns a prototype for mass update. `getRecords()` returns the page list.
+
+---
+
+## 10. Controller Rules Cheat Sheet
+
+### Controller Mode
+
+| Controller Type | Runs In | Sharing |
+| :--- | :--- | :--- |
+| **Standard Controller** | User mode | Enforces CRUD, FLS, sharing |
+| **Controller Extension** (on standard) | User mode | Inherits from standard controller |
+| **Custom Controller** | **System mode** | Ignores CRUD, FLS, sharing by default |
+| Custom Controller + `with sharing` | System mode BUT enforces **sharing rules only** (OWD, role hierarchy) | Still ignores CRUD/FLS |
+
+### Constructor Rules
+
+| Controller Type | Constructor Signature |
+| :--- | :--- |
+| **Custom Controller** | `public MyController() {}` — **NO arguments** |
+| **Controller Extension** (on standard) | `public MyExt(ApexPages.StandardController ctrl) {}` — **MUST take StandardController** |
+| **Controller Extension** (on custom) | `public MyExt(MyCustomController ctrl) {}` |
+
+### Getter / Setter Rules
+
+| Rule | Details |
+| :--- | :--- |
+| Getter naming | `getVariableName()` — page uses `{!variableName}` (without `get` prefix) |
+| Setter naming | `setVariableName(Type input)` — auto-called before action methods |
+| Setter execution order | Setters run **BEFORE** action methods |
+| Setter not always required | If `<apex:inputField>` is bound to sObject field, the binding is automatic |
+| Getter must be idempotent | Must produce same result whether called once or multiple times |
+| **DML in getters** | ❌ **NOT ALLOWED** |
+| **DML in constructors** | ❌ **NOT ALLOWED** |
+| **DML in setters** | ✅ Allowed |
+| **DML in action methods** | ✅ Allowed |
+| **@future on getters/setters/constructors** | ❌ **NOT ALLOWED** — page depends on immediate return |
+| **@future on web service callouts** | ✅ Allowed |
+
+### Web Service Method Rules
+
+| Rule | Details |
+| :--- | :--- |
+| Class access modifier | Must be **`global`** (not public, not private) |
+| Access check | Only checked at **entry point** |
+| Subsequent code | Runs in **system mode** — can modify any fields, call any methods |
+
+### Parameter Passing
+
+| Type | Passed By |
+| :--- | :--- |
+| Primitives (`String`, `Integer`, `Boolean`, etc.) | **Value** (copy) |
+| Non-primitives (`List`, `Map`, `Set`, sObjects) | **Reference** (direct) |
+
+---
+
+## 11. Standard Controller Actions
+
+The six valid actions: **Save, QuickSave, Edit, Delete, Cancel, List**
+
+| Action | Purpose |
+| :--- | :--- |
+| `save` | Save record and return to detail page |
+| `quickSave` | Save record and stay on current page |
+| `edit` | Switch to edit mode |
+| `delete` | Delete the record |
+| `cancel` | Abort edit, return to originating page |
+| `list` | Return to list view |
+
+> ❌ Select, Export, Abort, Close, Break, Stop do NOT exist!
+
+---
+
+## 12. VF Components That DON'T Exist (Exam Traps)
+
+```
+❌ <apex:fieldValue>     → use <apex:outputField>
+❌ <apex:userInfo>       → use {!$User.FirstName} global variables
+❌ <apex:record>         → use <apex:detail>
+❌ <apex:recordPage>     → use <apex:detail>
+❌ <apex:table>          → use <apex:dataTable> or <apex:pageBlockTable>
+❌ <apex:listTable>      → doesn't exist
+❌ <apex:outputTable>    → doesn't exist
+❌ <apex:script>         → use <script> or <apex:includeScript>
+❌ <apex:style>          → use <apex:stylesheet>
+❌ <apex:google>         → use <apex:map>
+❌ <apex:getsite>        → use <apex:iframe>
+❌ <apex:pageLayout>     → doesn't exist
+❌ <apex:includeJavaScript> → use <apex:includeScript>
+```
+
+---
+
+## 13. VF Charts Limitation
+
+- Visualforce charts use standard components to render.
+- Third-party JS charting libraries (Google Charts) ARE supported.
+- ❌ **VF charts do NOT display in `renderAs="pdf"` pages!**
+- ❌ VF charts cannot be used in Lightning Report Builder.
+
+---
+
+## 14. Child-to-Parent Traversal
+
+```html
+<!-- Up to 5 levels of child-to-parent traversal -->
+{!contact.Account.Owner.FirstName}
+
+<!-- Parent-to-child: only 1 level in merge fields -->
+{!account.Contacts}   ← must include parent object reference!
+
+<!-- ❌ WRONG: -->
+{!Contacts}   ← this doesn't work without the parent prefix
+```
+
+### PageReference
+
+```apex
+// Two valid ways:
+PageReference pageRef = new PageReference('/apex/MyPage');
+PageReference pageRef = Page.existingPageName;
+
+// ❌ INVALID:
+// ApexPages.Page().existingPageName — doesn't exist!
+```
+

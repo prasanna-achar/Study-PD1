@@ -9,7 +9,9 @@
 | Paper 2 | Process Automation & Logic | Attempt 1 | 2026-09-23 | 34/51 | 66.67% | 38m | -1.33% ❌ |
 | Paper 1 | Developer Fundamentals | Attempt 3 | 2026-09-24 | 49/58 | 84.48% | 40m | +16.48% ✅ |
 | Paper 2 | Process Automation & Logic | Attempt 2 | 2026-09-24 | 48/51 | 94.12% | 28m | +26.12% ✅ |
-| **Paper 3** | **Process Automation Pt 2** | **Attempt 1** | **2026-09-24** | **40/49** | **81.63%** | **43m** | **+13.63% ✅** |
+| Paper 3 | Process Automation Pt 2 | Attempt 1 | 2026-09-24 | 40/49 | 81.63% | 43m | +13.63% ✅ |
+| Paper 4 | Testing/Debug/Deploy Obj 1 | Attempt 1 | 2026-09-28 | 26/38 | 68.42% | 48m | +0.42% ✅ |
+| **Paper 5** | **User Interface Obj 1** | **Attempt 1** | **2026-09-28** | **38/74** | **51.35%** | **1h 32m** | **-16.65% ❌** |
 
 ---
 
