@@ -1,5 +1,28 @@
 # ⚡ Lightning Web Components (LWC) Mastery Roadmap
 
+---
+
+## 📚 Topic-Wise Notes Index (PD1 Exam Focused)
+
+> These notes are structured as: **Rule → Syntax → Trap → Example → Mnemonic**
+> Created from real mock exam wrong-answer analysis.
+
+| # | File | Topic | Priority |
+| :---: | :--- | :--- | :--- |
+| 01 | [01-Visualforce-Fundamentals.md](file:///c:/Users/karth/Desktop/PD1/lwc%20notes/01-Visualforce-Fundamentals.md) | Controller types, actions, view state, iteration | 🔴 High |
+| 02 | [02-VF-Controllers-and-Extensions.md](file:///c:/Users/karth/Desktop/PD1/lwc%20notes/02-VF-Controllers-and-Extensions.md) | Custom ctrl, extension constructors, system mode, web services | 🔴 High |
+| 03 | [03-StandardSetController.md](file:///c:/Users/karth/Desktop/PD1/lwc%20notes/03-StandardSetController.md) | SSC constructor traps, 10K limit, all methods | 🔴 **CRITICAL** |
+| 04 | [04-Security-and-Vulnerabilities.md](file:///c:/Users/karth/Desktop/PD1/lwc%20notes/04-Security-and-Vulnerabilities.md) | Sharing keywords, FLS, SOQL injection, XSS, CSRF, Crypto | 🔴 High |
+| 05 | [05-LWC-Core-Rules.md](file:///c:/Users/karth/Desktop/PD1/lwc%20notes/05-LWC-Core-Rules.md) | Decorators, lifecycle hooks, events, LMS, imports | 🔴 High |
+| 06 | [06-Aura-Components-Deep-Dive.md](file:///c:/Users/karth/Desktop/PD1/lwc%20notes/06-Aura-Components-Deep-Dive.md) | Bundle files, events, controller/helper, Apex calls | 🟠 Medium |
+| 07 | [07-NBA-and-Declarative-UI.md](file:///c:/Users/karth/Desktop/PD1/lwc%20notes/07-NBA-and-Declarative-UI.md) | Next Best Action, Dynamic Forms, Dynamic Actions, App Builder | 🟠 Medium |
+| 08 | [08-VF-in-LEX-and-Navigation.md](file:///c:/Users/karth/Desktop/PD1/lwc%20notes/08-VF-in-LEX-and-Navigation.md) | sforce.one, NavigationMixin, PageReference, LEX compat | 🟡 Medium |
+| 09 | [09-Wrong-Answer-Log-and-Traps.md](file:///c:/Users/karth/Desktop/PD1/lwc%20notes/09-Wrong-Answer-Log-and-Traps.md) | All traps organized by topic + 20 quick-fire cards | ⭐ **Read night before exam** |
+
+> **Exam Day Order:** Read 09 → 03 → 04 → 05 → 01 → 02 → 06 → 07 → 08
+
+---
+
 This step-by-step roadmap guides you from modern JavaScript standards right up to reactive LWC architecture, Salesforce data integration, and **PD1 / PD2 certification mastery**. Use the checkboxes to track your learning progress.
 
 ---
