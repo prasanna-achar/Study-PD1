@@ -343,3 +343,51 @@ handleSave: function(component, event, helper) {
 | **Lifecycle** | `init` → `render` → `afterRender` | `constructor` → `connectedCallback` → `renderedCallback` |
 | **Performance** | Slower (proprietary framework overhead) | Faster (native browser APIs) |
 | **Recommendation** | Legacy maintenance only | **All new development** |
+
+---
+
+## 11. Aura Exam Traps & Exact Rules (From Paper 6)
+
+### A. Initialization Order
+* **`init()` event fires from the INSIDE OUT (Innermost first):**
+  $$\text{AuraChild} \longrightarrow \text{AuraParent} \longrightarrow \text{MyAuraApplication}$$
+  *(Trap: The application does NOT initialize first; the deepest nested child initializes first!)*
+
+### B. Exposing Component Properties to App Builder (`.design`)
+To let admins edit a text or banner in Lightning App Builder:
+1. Define the attribute in `.cmp`: `<aura:attribute name="greeting" type="String"/>`
+2. Reference it in template: `<h2>{!v.greeting}</h2>`
+3. Expose it in `.design`: `<design:attribute name="greeting" label="Banner Greeting"/>`
+*(Trap: Do NOT use the Renderer or Helper to inject text from App Builder).*
+
+### C. `<aura:application>` vs `<aura:component>`
+* **`<aura:application>`**:
+  * Has its own **standalone URL** (e.g., `https://myDomain.lightning.force.com/c/myApp.app`).
+  * **Cannot** be added to Lightning Experience pages or the Salesforce mobile app navigation.
+  * Can contain components, but cannot be nested inside another `<aura:application>`.
+* **`<aura:component>`**:
+  * Cannot be accessed by a standalone URL directly.
+  * Placed on pages, apps, or utility bars via interfaces.
+
+### D. Third-Party JS Libraries in Aura
+* Loaded using **`<ltng:require>`**:
+  ```html
+  <ltng:require scripts="{!$Resource.myChartJs}" afterScriptsLoaded="{!c.scriptsLoaded}"/>
+  ```
+* **Critical Trap**: Never call the third-party script inside the standard `init` handler. Scripts load asynchronously, so they won't be ready. Always wait for `afterScriptsLoaded`.
+
+### E. Embedding a Screen Flow in Aura
+* In markup: `<lightning:flow aura:id="flowData"/>`
+* In controller:
+  ```javascript
+  var flow = component.find("flowData");
+  flow.startFlow("Property_Tax_Calculator");
+  ```
+
+### F. Page Interfaces (Record Page vs All Pages)
+| Interface | Effect |
+| :--- | :--- |
+| **`flexipage:availableForRecordHome`** | Enables component on **Record Pages only** |
+| **`flexipage:availableForAllPageTypes`** | Enables component on **any Lightning Page** (Record, Home, App) |
+| **`force:hasRecordId`** | Grants access to current `v.recordId` *(does NOT make the component visible in App Builder!)* |
+| **`force:hasSObjectName`** | Grants access to current `v.sObjectName` |

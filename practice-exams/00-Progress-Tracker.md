@@ -12,6 +12,7 @@
 | Paper 3 | Process Automation Pt 2 | Attempt 1 | 2026-09-24 | 40/49 | 81.63% | 43m | +13.63% ✅ |
 | Paper 4 | Testing/Debug/Deploy Obj 1 | Attempt 1 | 2026-09-28 | 26/38 | 68.42% | 48m | +0.42% ✅ |
 | **Paper 5** | **User Interface Obj 1** | **Attempt 1** | **2026-09-28** | **38/74** | **51.35%** | **1h 32m** | **-16.65% ❌** |
+| **Paper 6** | **User Interface Obj 2-6** | **Attempt 1** | **2026-09-29** | **43/98** | **43.88%** | **1h 47m** | **-24.12% ❌** |
 
 ---
 

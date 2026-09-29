@@ -122,3 +122,42 @@ These come built-in with Salesforce — no code required:
 ### Cross-Domain Security
 - By default, VF pages in Lightning run in an **iframe** with a different domain.
 - Use `$A.get("e.force:navigateToSObject")` or `sforce.one` for cross-domain navigation.
+
+---
+
+## 7. Einstein Next Best Action (NBA) — Exam Essentials
+
+Einstein Next Best Action displays contextual recommendations to users and triggers actions when accepted or rejected.
+
+### Architecture & Components
+* **Recommendation Source**: Built using **Strategy Builder** or **Flow Builder** (Recommendation Strategy flow).
+* **Display Component**: Added to pages in Lightning App Builder via the **Einstein Next Best Action** component. Admins select the **Strategy Source** and **Action Strategy**.
+* **Supported Objects**:
+  * Default is the standard **Recommendation** object.
+  * You can use other standard or custom objects (e.g., `Product2`) by using the **`Map` element** in Strategy Builder (or Recommendation Assignment in Flow) to map fields into recommendations.
+
+### Strategy Builder Core Elements
+| Element | Purpose |
+| :--- | :--- |
+| **`Generate`** | Invokes an Apex method annotated with **`@InvocableMethod`** to generate recommendations dynamically. |
+| **`Load`** | Loads existing recommendation records from Salesforce based on filter criteria. |
+| **`Branch Selector`** | Evaluates conditions (if/else) to choose which recommendation branch to follow. |
+| **`Branch Merge`** | Combines recommendations from multiple branches into a single stream. |
+| **`Enhance`** | Modifies existing recommendations on the fly using Apex. |
+
+### Accept vs Reject Execution
+* **A single Flow handles both acceptance and rejection.**
+* To trigger on rejection: Enable **"Launch Flow on Rejection"** in the NBA component properties in App Builder.
+* Inside the Flow, add a Decision element checking the boolean variable **`isRecommendationAccepted`**.
+
+---
+
+## 8. Dynamic Forms & Platform Security Settings (Paper 6 Traps)
+
+### Dynamic Forms Field Alignment
+* **"Align fields horizontally"**: A setting in the properties of a Field Section component. Prevents fields in multi-column layouts from collapsing upward when neighbor fields have different heights.
+
+### Platform Security Settings
+* **Referrer-Policy HTTP Header**: In Setup $\rightarrow$ *Session Settings*, enable **"Include Referrer-Policy HTTP header"** to control how much identifying Salesforce URL information is sent to external websites.
+* **Content Sniffing Protection**: Enabled by default and cannot be disabled. Prevents browsers from executing malicious scripts disguised as other file types (stops MIME-sniffing attacks).
+* **Anti-CSRF Token**: Salesforce embeds a random anti-CSRF token as a hidden form field in every page to protect against Cross-Site Request Forgery.

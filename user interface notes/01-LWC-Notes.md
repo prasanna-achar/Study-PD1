@@ -371,3 +371,84 @@ this.dispatchEvent(new ShowToastEvent({
 - **Locker Service / Lightning Web Security (LWS)**: Enforces strict isolation between components from different namespaces. Components cannot access each other's DOM.
 - **Shadow DOM**: Each LWC has its own isolated DOM tree. CSS styles don't leak in or out.
 - **CRUD/FLS in Apex**: Always use `WITH USER_MODE` or `WITH SECURITY_ENFORCED` in SOQL, or `Security.stripInaccessible()` before returning data to LWC.
+
+---
+
+## 11. High-Yield Exam Traps & Exact Syntax Rules (From Paper 6)
+
+### A. Lightning Message Service (LMS)
+* **Import Syntax**: Always suffix with **`__c`**:
+  ```javascript
+  import sampleChannel from '@salesforce/messageChannel/SampleChannel__c';
+  ```
+* **Reading Message Payload**: Access directly on the message parameter:
+  ```javascript
+  handleMessage(message) {
+      this.tabId = message.tabId; // Direct! NOT message.data or message.dataset
+  }
+  ```
+* **Message Channel XML Definition** (`.messageChannel-meta.xml`):
+  ```xml
+  <LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+      <masterLabel>SampleChannel</masterLabel>
+      <isExposed>true</isExposed>
+      <lightningMessageFields>
+          <fieldName>tabId</fieldName>
+          <description>Unique ID of tab</description>
+      </lightningMessageFields>
+  </LightningMessageChannel>
+  ```
+* **Cross-Framework Scope**: LMS connects **LWC, Aura, Visualforce, and Utility Bar** across the entire DOM.
+
+### B. LDS & uiRecordApi Quirks
+* **`refreshApex(param)`**: Must pass the **provisioned wired property object**, NOT the Apex method name:
+  ```javascript
+  @wire(getAccounts) wiredAccounts;
+  handleRefresh() {
+      refreshApex(this.wiredAccounts); // ✅ Correct
+      // refreshApex(getAccounts);    // ❌ WRONG!
+  }
+  ```
+* **`createRecord(recordInput)`**: Imported as a standalone function from `lightning/uiRecordApi`:
+  ```javascript
+  import { createRecord } from 'lightning/uiRecordApi';
+  // Call directly — NOT this.createRecord()!
+  createRecord(recordInput).then(result => { ... });
+  ```
+* **`<lightning-datatable>` Inline Editing**:
+  * Changes are in `event.detail.draftValues` (array of edited records).
+  * You **must include the record `Id`** when saving: `fields['Id'] = event.detail.draftValues[0].Id`.
+  * `updateRecord` from `uiRecordApi` only handles **one record at a time**. For bulk multi-row saving, pass `draftValues` to an **Apex controller**!
+
+### C. NavigationMixin Page Types
+* To navigate to an **Object Home / Standard Tab**:
+  ```javascript
+  this[NavigationMixin.Navigate]({
+      type: 'standard__objectPage',
+      attributes: {
+          objectApiName: 'Account',
+          actionName: 'home' // 'home' or 'list'
+      }
+  });
+  ```
+  *(Trap: Do NOT use `standard__recordPage` for standard tabs!)*
+* To navigate to a **URL-addressable LWC**: target is `lightning__UrlAddressable`, pattern is `/lightning/cmp/c__MyComponent?c__param=val`, values in `state` object must be **String**.
+
+### D. LWC Quick Actions (`.js-meta.xml`)
+To make an LWC available as an object-specific Quick Action:
+```xml
+<target>lightning__RecordAction</target>
+<targetConfigs>
+    <targetConfig targets="lightning__RecordAction">
+        <actionType>ScreenAction</actionType> <!-- Modal with UI -->
+        <!-- Or <actionType>Action</actionType> for Headless/Background -->
+    </targetConfig>
+</targetConfigs>
+```
+
+### E. Checking Custom Permissions in LWC
+Do not make an Apex call or use visibility filters. Import the scoped module:
+```javascript
+import hasPermission from '@salesforce/customPermission/Manage_Files';
+// Returns boolean true / false
+```
