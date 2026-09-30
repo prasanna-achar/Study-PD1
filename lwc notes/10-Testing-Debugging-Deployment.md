@@ -124,3 +124,72 @@ When an autolaunched or record-triggered flow fails halfway:
 
 **Q: Which Setup page shows completed asynchronous Apex jobs (batch, future)?**
 > A: "Apex Jobs". ("Scheduled Jobs" is only for managing the schedule).
+
+---
+
+## 6. Environments & Sandboxes (Objective 4)
+
+### Rule: Sandbox Types & Limits
+Memorize the 4 sandbox types and what they are for:
+1. **Developer Sandbox:** 200MB. Refreshed daily. For single developers.
+2. **Developer Pro Sandbox:** 1GB. Refreshed daily. For larger dev/integration.
+3. **Partial Copy Sandbox:** 5GB (max 10k records/object). Refreshed every 5 days. For UAT, training, testing with a *sample* of live data.
+4. **Full Copy Sandbox:** Exact replica. Refreshed every 29 days. **ONLY FOR:** Staging, Performance Testing, and Load Testing.
+
+### Trap: Sharing sandboxes and environments
+- "Share a scratch org between developers" ❌ WRONG. Scratch orgs are single-use per developer.
+- "You can build managed packages in a sandbox" ❌ WRONG. Only Developer Edition or Partner Developer Edition orgs can create managed packages.
+- Need all developers to have the same metadata? → **Clone an existing sandbox.**
+
+### Rule: AppExchange Package Creation
+To distribute a commercially available app on the AppExchange:
+1. Manage source code in a **Partner Developer Edition**.
+2. Create the package in a **Developer Edition**.
+- You CANNOT publish apps from Developer Pro or Partial Copy sandboxes.
+
+---
+
+## 7. Deployment Tools (Change Sets, CLI, VS Code)
+
+### Rule: Change Sets
+- **Requirement:** Orgs MUST be related (e.g., Sandbox to Production, or Sandbox to Sandbox).
+- ❌ NOT available in Developer Edition orgs.
+- **Trap: Change Set from Sandbox to Prod is missing target!** → Go to *Production* Deployment Settings and **allow inbound changes** from the sandbox.
+- **Test Coverage Trap:** If overall org coverage is < 75%, but your specific class is 97%: Use **'Run specified tests'** during deployment (the specific class must pass 75%).
+
+### Rule: Salesforce CLI (sf)
+- It CAN deploy metadata between *unrelated* orgs.
+- It CAN be used to automate/schedule scripted deployments.
+- **Deleting Metadata:** You CAN delete metadata using the CLI (Metadata API under the hood). Change Sets *cannot* delete components.
+- Syntax to delete a class: `sf project delete source --metadata ApexClass:MyClass`
+
+### Rule: Metadata API Limitations
+You CANNOT deploy these via Metadata API (or change sets):
+- Currency Exchange Rates
+- Account Teams / Case Team Roles
+- Calendars / Fiscal Years
+
+### Rule: Package vs Org Development Models
+- **Package Development:** Everything managed as a single unit in version control (source of truth). Uses scratch orgs for dev/test.
+- **Org Development (Change Set Model):** Uses sandbox orgs for dev/test. Deploys via change sets.
+
+### Rule: DevOps Center
+- Centralized deployment tool (managed package).
+- Requires integration with a **Github Account** for tracking metadata changes.
+
+---
+
+## 8. Deployment Gotchas
+
+**Why didn't my sandbox flow send an email?**
+1. Check email addresses (sandbox appends `.invalid` to all emails).
+2. Check email deliverability settings (often defaults to System Email Only).
+3. Check the Email Logs.
+
+**Why did my metadata deployment not generate a debug log?**
+- By default, debug logs are disabled for metadata deployments.
+- You must enable **"Metadata Deployments can generate Debug Logs"** in Apex Settings via Setup.
+
+**Tooling API vs Metadata API**
+- **Metadata API:** Large XML deployments, object definitions.
+- **Tooling API:** Fine-grained access. Used for accessing a debug log (ApexLog), code coverage results, committing single class changes.
